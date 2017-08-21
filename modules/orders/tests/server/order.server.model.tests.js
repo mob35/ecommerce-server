@@ -17,8 +17,8 @@ var user,
 /**
  * Unit tests
  */
-describe('Order Model Unit Tests:', function() {
-  beforeEach(function(done) {
+describe('Order Model Unit Tests:', function () {
+  beforeEach(function (done) {
     user = new User({
       firstName: 'Full',
       lastName: 'Name',
@@ -28,9 +28,9 @@ describe('Order Model Unit Tests:', function() {
       password: 'password'
     });
 
-    user.save(function() {
+    user.save(function () {
       order = new Order({
-        name: 'Order Name',
+        amount: 1234,
         user: user
       });
 
@@ -38,28 +38,19 @@ describe('Order Model Unit Tests:', function() {
     });
   });
 
-  describe('Method Save', function() {
-    it('should be able to save without problems', function(done) {
+  describe('Method Save', function () {
+    it('should be able to save without problems', function (done) {
       this.timeout(0);
-      return order.save(function(err) {
+      return order.save(function (err) {
         should.not.exist(err);
-        done();
-      });
-    });
-
-    it('should be able to show an error when try to save without name', function(done) {
-      order.name = '';
-
-      return order.save(function(err) {
-        should.exist(err);
         done();
       });
     });
   });
 
-  afterEach(function(done) {
-    Order.remove().exec(function() {
-      User.remove().exec(function() {
+  afterEach(function (done) {
+    Order.remove().exec(function () {
+      User.remove().exec(function () {
         done();
       });
     });
