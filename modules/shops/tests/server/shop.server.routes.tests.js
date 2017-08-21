@@ -51,7 +51,19 @@ describe('Shop CRUD tests', function () {
     // Save a user to the test db and create new Shop
     user.save(function () {
       shop = {
-        name: 'Shop name'
+        name: 'Shop Name',
+        detail: 'Shop detail of Shop Name',
+        email: 'Shop@shop.com',
+        tel: '0999999999',
+        map: {
+          lat: '100',
+          lng: '100'
+        },
+        img: [
+          {
+            url: 'testurl'
+          }
+        ],
       };
 
       done();
@@ -94,7 +106,13 @@ describe('Shop CRUD tests', function () {
 
                 // Set assertions
                 (shops[0].user._id).should.equal(userId);
-                (shops[0].name).should.match('Shop name');
+                (shops[0].name).should.match('Shop Name');
+                (shops[0].detail).should.match('Shop detail of Shop Name');
+                (shops[0].email).should.match('Shop@shop.com');
+                (shops[0].tel).should.match('0999999999');
+                (shops[0].map.lat).should.match('100');
+                (shops[0].map.lng).should.match('100');
+                (shops[0].img[0].url).should.match('testurl');
 
                 // Call the assertion callback
                 done();
