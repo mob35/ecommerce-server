@@ -51,7 +51,12 @@ describe('Cart CRUD tests', function () {
     // Save a user to the test db and create new Cart
     user.save(function () {
       cart = {
-        name: 'Cart name'
+        products: [{
+          itemamount: 100,
+          qty: 1
+        }],
+        amount: 100,
+        user: user
       };
 
       done();
@@ -94,7 +99,7 @@ describe('Cart CRUD tests', function () {
 
                 // Set assertions
                 (carts[0].user._id).should.equal(userId);
-                (carts[0].name).should.match('Cart name');
+                (carts[0].amount).should.match(100);
 
                 // Call the assertion callback
                 done();
@@ -113,9 +118,9 @@ describe('Cart CRUD tests', function () {
       });
   });
 
-  it('should not be able to save an Cart if no name is provided', function (done) {
+  it('should not be able to save an Cart if no products is provided', function (done) {
     // Invalidate name field
-    cart.name = '';
+    cart.products = [];
 
     agent.post('/api/auth/signin')
       .send(credentials)
@@ -135,7 +140,7 @@ describe('Cart CRUD tests', function () {
           .expect(400)
           .end(function (cartSaveErr, cartSaveRes) {
             // Set message assertion
-            (cartSaveRes.body.message).should.match('Please fill Cart name');
+            (cartSaveRes.body.message).should.match('Please fill Cart items');
 
             // Handle Cart save error
             done(cartSaveErr);
@@ -167,7 +172,7 @@ describe('Cart CRUD tests', function () {
             }
 
             // Update Cart name
-            cart.name = 'WHY YOU GOTTA BE SO MEAN?';
+            cart.products[0].qty = 2;
 
             // Update an existing Cart
             agent.put('/api/carts/' + cartSaveRes.body._id)
@@ -181,7 +186,7 @@ describe('Cart CRUD tests', function () {
 
                 // Set assertions
                 (cartUpdateRes.body._id).should.equal(cartSaveRes.body._id);
-                (cartUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
+                (cartUpdateRes.body.products[0].qty).should.match(2);
 
                 // Call the assertion callback
                 done();
@@ -218,7 +223,7 @@ describe('Cart CRUD tests', function () {
       request(app).get('/api/carts/' + cartObj._id)
         .end(function (req, res) {
           // Set assertion
-          res.body.should.be.instanceof(Object).and.have.property('name', cart.name);
+          res.body.should.be.instanceof(Object).and.have.property('amount', cart.amount);
 
           // Call the assertion callback
           done();
@@ -363,7 +368,7 @@ describe('Cart CRUD tests', function () {
               }
 
               // Set assertions on new Cart
-              (cartSaveRes.body.name).should.equal(cart.name);
+              (cartSaveRes.body.amount).should.equal(cart.amount);
               should.exist(cartSaveRes.body.user);
               should.equal(cartSaveRes.body.user._id, orphanId);
 
@@ -390,7 +395,7 @@ describe('Cart CRUD tests', function () {
 
                         // Set assertions
                         (cartInfoRes.body._id).should.equal(cartSaveRes.body._id);
-                        (cartInfoRes.body.name).should.equal(cart.name);
+                        (cartInfoRes.body.amount).should.equal(cart.amount);
                         should.equal(cartInfoRes.body.user, undefined);
 
                         // Call the assertion callback
