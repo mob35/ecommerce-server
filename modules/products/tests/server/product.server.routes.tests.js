@@ -51,7 +51,23 @@ describe('Product CRUD tests', function () {
     // Save a user to the test db and create new Product
     user.save(function () {
       product = {
-        name: 'Product name'
+        name: 'Product name',
+        detail: 'Product detail',
+        unitprice: 100,
+        qty: 10,
+        img: [{
+          url: 'img url',
+          id: 'img id'
+        }],
+        preparedays: 10,
+        favorite: [{
+          customerid: user,
+          favdate: new Date('2017-08-21')
+        }],
+        historylog: [{
+          customerid: user,
+          hisdate: new Date('2017-08-21')
+        }]
       };
 
       done();
@@ -95,6 +111,16 @@ describe('Product CRUD tests', function () {
                 // Set assertions
                 (products[0].user._id).should.equal(userId);
                 (products[0].name).should.match('Product name');
+                (products[0].detail).should.match('Product detail');
+                (products[0].unitprice).should.match(100);
+                (products[0].qty).should.match(10);
+                (products[0].img[0].url).should.match('img url');
+                (products[0].img[0].id).should.match('img id');
+                (products[0].preparedays).should.match(10);
+                (products[0].favorite[0].customerid).should.match(userId);
+                (products[0].favorite[0].favdate).should.match(product.favorite[0].favdate);
+                (products[0].historylog[0].customerid).should.match(userId);
+                (products[0].historylog[0].hisdate).should.match(product.historylog[0].hisdate);
 
                 // Call the assertion callback
                 done();
