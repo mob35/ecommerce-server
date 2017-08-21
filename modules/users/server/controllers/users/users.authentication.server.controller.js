@@ -7,7 +7,6 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   mongoose = require('mongoose'),
   passport = require('passport'),
-  crypto = require('crypto'),
   User = mongoose.model('User');
 
 // URLs for which user can't be redirected on signin
@@ -21,7 +20,7 @@ var noReturnUrls = [
  */
 exports.signup = function (req, res) {
   // For security measurement we remove the roles from the req.body object
-  // delete req.body.roles;
+  delete req.body.roles;
 
   // Init Variables
   var user = new User(req.body);
@@ -46,12 +45,7 @@ exports.signup = function (req, res) {
         if (err) {
           res.status(400).send(err);
         } else {
-          User.findById(user._id)
-            .populate('employeeprofile')
-            .populate('company')
-            .exec(function (err, userp) {
-              res.json(userp);
-            });
+          res.json(user);
         }
       });
     }
@@ -69,22 +63,16 @@ exports.signin = function (req, res, next) {
       // Remove sensitive data before login
       user.password = undefined;
       user.salt = undefined;
-      // .populate('employeeprofile')
+
       req.login(user, function (err) {
         if (err) {
           res.status(400).send(err);
         } else {
-          User.findById(user._id)
-            .populate('employeeprofile')
-            .populate('company')
-            .exec(function (err, userp) {
-              res.json(userp);
-            });
+          res.json(user);
         }
       });
     }
   })(req, res, next);
-
 };
 
 /**
