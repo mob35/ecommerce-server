@@ -31,35 +31,16 @@ exports.create = function (req, res) {
 /**
  * Show the current Shop
  */
-exports.productbyshop = function (req, res, next) {
-  Product.find({ shopseller: req.shopid }).sort('-created').populate('user', 'displayName').exec(function (err, products) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      console.log(products);
-      req.productsbyshop = products;
-      next();
-    }
-  });
-};
-
 
 exports.read = function (req, res) {
   // convert mongoose document to JSON
   var shop = req.shop ? req.shop.toJSON() : {};
-  shop.products = [];
-  shop.products = req.productsbyshop;
-  console.log(shop);
+
   // Add a custom field to the Article, for determining if the current User is the "owner".
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
   shop.isCurrentUserOwner = req.user && shop.user && shop.user._id.toString() === req.user._id.toString();
 
-  res.jsonp({
-    shop: shop,
-    title: 'Shop Detail'
-  });
+  res.jsonp(shop);
 };
 
 /**
