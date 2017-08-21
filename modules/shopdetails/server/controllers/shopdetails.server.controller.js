@@ -21,7 +21,10 @@ exports.read = function (req, res) {
     _id: req.shopdetail._id,
     products: req.products
   };
-  res.jsonp({ shop: data });
+  res.jsonp({
+    shop: data,
+    title: 'Shop detail'
+  });
 };
 
 exports.productbyshop = function (req, res, next) {
