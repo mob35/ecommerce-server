@@ -5,113 +5,113 @@
  */
 var path = require('path'),
   mongoose = require('mongoose'),
-  Order = mongoose.model('Order'),
+  Shipping = mongoose.model('Shipping'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
 /**
- * Create a Order
+ * Create a Shipping
  */
 exports.create = function(req, res) {
-  var order = new Order(req.body);
-  order.user = req.user;
+  var shipping = new Shipping(req.body);
+  shipping.user = req.user;
 
-  order.save(function(err) {
+  shipping.save(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(order);
+      res.jsonp(shipping);
     }
   });
 };
 
 /**
- * Show the current Order
+ * Show the current Shipping
  */
 exports.read = function(req, res) {
   // convert mongoose document to JSON
-  var order = req.order ? req.order.toJSON() : {};
+  var shipping = req.shipping ? req.shipping.toJSON() : {};
 
   // Add a custom field to the Article, for determining if the current User is the "owner".
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
-  order.isCurrentUserOwner = req.user && order.user && order.user._id.toString() === req.user._id.toString();
+  shipping.isCurrentUserOwner = req.user && shipping.user && shipping.user._id.toString() === req.user._id.toString();
 
-  res.jsonp(order);
+  res.jsonp(shipping);
 };
 
 /**
- * Update a Order
+ * Update a Shipping
  */
 exports.update = function(req, res) {
-  var order = req.order;
+  var shipping = req.shipping;
 
-  order = _.extend(order, req.body);
+  shipping = _.extend(shipping, req.body);
 
-  order.save(function(err) {
+  shipping.save(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(order);
+      res.jsonp(shipping);
     }
   });
 };
 
 /**
- * Delete an Order
+ * Delete an Shipping
  */
 exports.delete = function(req, res) {
-  var order = req.order;
+  var shipping = req.shipping;
 
-  order.remove(function(err) {
+  shipping.remove(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(order);
+      res.jsonp(shipping);
     }
   });
 };
 
 /**
- * List of Orders
+ * List of Shippings
  */
 exports.list = function(req, res) {
-  Order.find().sort('-created').populate('user', 'displayName').exec(function(err, orders) {
+  Shipping.find().sort('-created').populate('user', 'displayName').exec(function(err, shippings) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(orders);
+      res.jsonp(shippings);
     }
   });
 };
 
 /**
- * Order middleware
+ * Shipping middleware
  */
-exports.orderByID = function(req, res, next, id) {
+exports.shippingByID = function(req, res, next, id) {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send({
-      message: 'Order is invalid'
+      message: 'Shipping is invalid'
     });
   }
 
-  Order.findById(id).populate('user', 'displayName').exec(function (err, order) {
+  Shipping.findById(id).populate('user', 'displayName').exec(function (err, shipping) {
     if (err) {
       return next(err);
-    } else if (!order) {
+    } else if (!shipping) {
       return res.status(404).send({
-        message: 'No Order with that identifier has been found'
+        message: 'No Shipping with that identifier has been found'
       });
     }
-    req.order = order;
+    req.shipping = shipping;
     next();
   });
 };
