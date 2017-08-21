@@ -29,9 +29,7 @@ describe('User CRUD tests', function () {
     // Create user credentials
     credentials = {
       username: 'username',
-      password: 'M3@n.jsI$Aw3$0m3',
-      email:'dook@gmail.com',
-      deviceID:'123456789'
+      password: 'M3@n.jsI$Aw3$0m3'
     };
 
     // Create a new user
@@ -39,9 +37,7 @@ describe('User CRUD tests', function () {
       firstName: 'Full',
       lastName: 'Name',
       displayName: 'Full Name',
-      tel: 'tel',
-      email: credentials.email,
-      deviceID:credentials.deviceID,
+      email: 'test@test.com',
       username: credentials.username,
       password: credentials.password,
       provider: 'local'
@@ -54,15 +50,12 @@ describe('User CRUD tests', function () {
       should.not.exist(err);
       done();
     });
-
   });
 
   it('should be able to register a new user', function (done) {
 
     _user.username = 'register_new_user';
     _user.email = 'register_new_user_@test.com';
-    _user.deviceID = '90900dsfgfsdgrtry90909';
-    _user.tel = 'tel';
 
     agent.post('/api/auth/signup')
       .send(_user)
@@ -75,49 +68,14 @@ describe('User CRUD tests', function () {
 
         signupRes.body.username.should.equal(_user.username);
         signupRes.body.email.should.equal(_user.email);
-        signupRes.body.tel.should.equal(_user.tel);
-        signupRes.body.deviceID.should.equal(_user.deviceID);
         // Assert a proper profile image has been set, even if by default
-        // signupRes.body.profileImageURL.should.not.be.empty();
+        signupRes.body.profileImageURL.should.not.be.empty();
         // Assert we have just the default 'user' role
         signupRes.body.roles.should.be.instanceof(Array).and.have.lengthOf(1);
         signupRes.body.roles.indexOf('user').should.equal(0);
         return done();
       });
   });
-
-  // it('should be able to login successfully and logout successfully', function (done) {
-  //   agent.post('/api/auth/signin')
-  //     .send(credentials)
-  //     .expect(200)
-  //     .end(function (signinErr, signinRes) {
-  //       // Handle signin error
-  //       if (signinErr) {
-  //         return done(signinErr);
-  //       }
-
-  //       // Logout
-  //       agent.get('/api/auth/signout')
-  //         .expect(302)
-  //         .end(function (signoutErr, signoutRes) {
-  //           if (signoutErr) {
-  //             return done(signoutErr);
-  //           }
-
-  //           signoutRes.redirect.should.equal(true);
-
-  //           // NodeJS v4 changed the status code representation so we must check
-  //           // before asserting, to be comptabile with all node versions.
-  //           if (process.version.indexOf('v6') === 0) {
-  //             signoutRes.text.should.equal('Found. Redirecting to /');
-  //           } else {
-  //             signoutRes.text.should.equal('Moved Temporarily. Redirecting to /');
-  //           }
-
-  //           return done();
-  //         });
-  //     });
-  // });
 
   it('should not be able to retrieve a list of users if not admin', function (done) {
     agent.post('/api/auth/signin')
@@ -143,7 +101,7 @@ describe('User CRUD tests', function () {
   });
 
   it('should be able to retrieve a list of users if admin', function (done) {
-    user.roles = ['user', 'admin', 'seller'];
+    user.roles = ['user', 'admin'];
 
     user.save(function (err) {
       should.not.exist(err);
@@ -174,7 +132,7 @@ describe('User CRUD tests', function () {
   });
 
   it('should be able to get a single user details if admin', function (done) {
-    user.roles = ['user', 'admin', 'seller'];
+    user.roles = ['user', 'admin'];
 
     user.save(function (err) {
       should.not.exist(err);
@@ -206,7 +164,7 @@ describe('User CRUD tests', function () {
   });
 
   it('should be able to update a single user details if admin', function (done) {
-    user.roles = ['user', 'admin', 'seller'];
+    user.roles = ['user', 'admin'];
 
     user.save(function (err) {
       should.not.exist(err);
@@ -249,7 +207,7 @@ describe('User CRUD tests', function () {
   });
 
   it('should be able to delete a single user if admin', function (done) {
-    user.roles = ['user', 'admin', 'seller'];
+    user.roles = ['user', 'admin'];
 
     user.save(function (err) {
       should.not.exist(err);
@@ -682,7 +640,7 @@ describe('User CRUD tests', function () {
           var userUpdate = {
             firstName: 'user_update_first',
             lastName: 'user_update_last',
-            roles: ['user', 'admin', 'seller']
+            roles: ['user', 'admin']
           };
 
           agent.put('/api/users')
@@ -751,7 +709,7 @@ describe('User CRUD tests', function () {
   //             }
 
   //             // Call the assertion callback
-  //             userInfoRes.body.message.should.equal('11000 duplicate key error collection: mean-test.users index: username already exists');
+  //             userInfoRes.body.message.should.equal('Username already exists');
 
   //             return done();
   //           });
@@ -803,7 +761,7 @@ describe('User CRUD tests', function () {
   //             }
 
   //             // Call the assertion callback
-  //             userInfoRes.body.message.should.equal('11000 duplicate key error collection: mean-test.users index: email already exists');
+  //             userInfoRes.body.message.should.equal('Email already exists');
 
   //             return done();
   //           });
