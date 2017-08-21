@@ -7,6 +7,7 @@ var should = require('should'),
     User = mongoose.model('User'),
     Product = mongoose.model('Product'),
     Shop = mongoose.model('Shop'),
+    Shipping = mongoose.model('Shipping'),
     express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -17,15 +18,16 @@ var app,
     credentials,
     user,
     shop,
+    shipping,
     product;
 // productlist;
 
 /**
  * Productlist routes tests
  */
-describe('Productlist CRUD tests', function() {
+describe('Productlist CRUD tests', function () {
 
-    before(function(done) {
+    before(function (done) {
         // Get application
         app = express.init(mongoose);
         agent = request.agent(app);
@@ -33,7 +35,7 @@ describe('Productlist CRUD tests', function() {
         done();
     });
 
-    beforeEach(function(done) {
+    beforeEach(function (done) {
         credentials = {
             username: 'username',
             password: 'M3@n.jsI$Aw3$0m3'
@@ -64,6 +66,12 @@ describe('Productlist CRUD tests', function() {
             },
         });
 
+        shipping = new Shipping({
+            name: 'shipping name',
+            detail: 'shipping detail',
+            days: 10
+        });
+
         product = new Product({
             name: 'Product name',
             detail: 'Product detail',
@@ -82,27 +90,34 @@ describe('Productlist CRUD tests', function() {
                 customerid: user,
                 hisdate: new Date('2017-08-21')
             }],
+            shippings: [{
+                shipping: shipping,
+                shippingprice: 10,
+                shippingstartdate: new Date('2017-08-21'),
+                shippingenddate: new Date('2017-08-21')
+            }],
             shopseller: shop
         });
 
         // Save a user to the test db and create new Productlist
-        user.save(function() {
-            shop.save(function() {
-                product.save(function() {
-                    done();
+        user.save(function () {
+            shop.save(function () {
+                shipping.save(function () {
+                    product.save(function () {
+                        done();
+                    });
                 });
             });
         });
     });
 
-    it('get product list', function(done) {
+    it('get product list', function (done) {
         agent.get('/api/productlists')
             .send(product)
             .expect(200)
-            .end(function(productlistSaveErr, productlistSaveRes) {
+            .end(function (productlistSaveErr, productlistSaveRes) {
                 // Call the assertion callback
                 var productlists = productlistSaveRes.body;
-                console.log('sssssssssss' + JSON.stringify(productlists));
                 (productlists[0].name).should.equal('Product name');
                 (productlists[0].detail).should.equal('Product detail');
                 (productlists[0].unitprice).should.equal(100);
@@ -112,11 +127,13 @@ describe('Productlist CRUD tests', function() {
             });
     });
 
-    afterEach(function(done) {
-        User.remove().exec(function() {
-            Shop.remove().exec(function() {
-                Product.remove().exec(function() {
-                    done();
+    afterEach(function (done) {
+        User.remove().exec(function () {
+            Shop.remove().exec(function () {
+                Shipping.remove().exec(function () {
+                    Product.remove().exec(function () {
+                        done();
+                    });
                 });
             });
         });
