@@ -135,6 +135,7 @@ describe('Shopdetail CRUD tests', function () {
           (shopdetails.shop._id).should.equal(shopObj.id);
           (shopdetails.shop.name).should.match('Shop Name');
           (shopdetails.shop.products.length).should.match(1);
+          (shopdetails.title).should.match('Shop detail');
 
           // Call the assertion callback
           done();
