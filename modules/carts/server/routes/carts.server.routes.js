@@ -6,7 +6,7 @@
 var cartsPolicy = require('../policies/carts.server.policy'),
   carts = require('../controllers/carts.server.controller');
 
-module.exports = function(app) {
+module.exports = function (app) {
   // Carts Routes
   app.route('/api/carts').all(cartsPolicy.isAllowed)
     .get(carts.list)
@@ -16,6 +16,10 @@ module.exports = function(app) {
     .get(carts.read)
     .put(carts.update)
     .delete(carts.delete);
+
+  app.route('/api/add/cart').all(cartsPolicy.isAllowed)
+    .get(carts.list)
+    .post(carts.findUserCart, carts.processingAddUserCart, carts.saveUserCart, carts.updateUserCart);
 
   // Finish by binding the Cart middleware
   app.param('cartId', carts.cartByID);
