@@ -8,6 +8,7 @@ var should = require('should'),
   Cart = mongoose.model('Cart'),
   Product = mongoose.model('Product'),
   Shop = mongoose.model('Shop'),
+  Shipping = mongoose.model('Shipping'),  
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -20,7 +21,9 @@ var app,
   cart,
   shop,
   product,
-  product2;
+  product2,
+  shipping;
+  
 
 /**
  * Manage cart routes tests
@@ -76,6 +79,12 @@ describe('Manage cart CRUD tests', function () {
         url: 'img url',
         id: 'img id'
       }],
+      shippings: [{
+        shipping: shipping,
+        shippingprice: 10,
+        shippingstartdate: new Date('2017-08-21'),
+        shippingenddate: new Date('2017-08-21')
+      }],
       preparedays: 10,
       favorite: [{
         customerid: user,
@@ -96,6 +105,12 @@ describe('Manage cart CRUD tests', function () {
       img: [{
         url: 'img url',
         id: 'img id'
+      }],
+      shippings: [{
+        shipping: shipping,
+        shippingprice: 10,
+        shippingstartdate: new Date('2017-08-21'),
+        shippingenddate: new Date('2017-08-21')
       }],
       preparedays: 10,
       favorite: [{
