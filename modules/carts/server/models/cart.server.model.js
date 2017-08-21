@@ -10,11 +10,23 @@ var mongoose = require('mongoose'),
  * Cart Schema
  */
 var CartSchema = new Schema({
-  name: {
-    type: String,
-    default: '',
-    required: 'Please fill Cart name',
-    trim: true
+  products: {
+    type: [{
+      product: {
+        type: Schema.ObjectId,
+        ref: 'Product'
+      },
+      itemamount: {
+        type: Number
+      },
+      qty: {
+        type: Number
+      }
+    }],
+    required: 'Please fill Cart items'
+  },
+  amount: {
+    type: Number,
   },
   created: {
     type: Date,
