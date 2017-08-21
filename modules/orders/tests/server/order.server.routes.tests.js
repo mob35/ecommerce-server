@@ -51,37 +51,7 @@ describe('Order CRUD tests', function() {
         // Save a user to the test db and create new Order
         user.save(function() {
             order = {
-                shipping: {
-                    address: '499/195',
-                    subdistrict: 'Khongthanon',
-                    district: 'Saimai',
-                    province: 'Bangkok',
-                    postcode: '10220'
-                },
-                items: [{
-                    qty: 1,
-                    amount: 200,
-                    delivery: {
-                        description: '12 01 2533',
-                        deliverytype: 'TestDelivery'
-                    }
-                }, {
-                    qty: 1,
-                    amount: 300,
-                    delivery: {
-                        description: '12 01 2533',
-                        deliverytype: 'TestDelivery'
-                    }
-                }],
-                payment: {
-                    paymenttype: 'Credit',
-                    creditno: '2345761890876543',
-                    creditname: 'Sirintra Wannakheaw',
-                    expdate: '02/2018',
-                    creditcvc: '222',
-                    counterservice: ''
-                },
-                discount: 100,
+                discount: 100
             };
 
             done();
@@ -124,8 +94,7 @@ describe('Order CRUD tests', function() {
 
                                 // Set assertions
                                 (orders[0].user._id).should.equal(userId);
-                                (orders[0].amount).should.match(500);
-                                (orders[0].totalamount).should.match(400);
+                                (orders[0].discount).should.match(100);
 
                                 // Call the assertion callback
                                 done();
@@ -168,7 +137,7 @@ describe('Order CRUD tests', function() {
                         }
 
                         // Update Order name
-                        order.amount = 4444;
+                        order.discount = 200;
 
                         // Update an existing Order
                         agent.put('/api/orders/' + orderSaveRes.body._id)
@@ -182,7 +151,7 @@ describe('Order CRUD tests', function() {
 
                                 // Set assertions
                                 (orderUpdateRes.body._id).should.equal(orderSaveRes.body._id);
-                                (orderUpdateRes.body.amount).should.match(4444);
+                                (orderUpdateRes.body.discount).should.match(200);
 
                                 // Call the assertion callback
                                 done();
@@ -364,7 +333,7 @@ describe('Order CRUD tests', function() {
                             }
 
                             // Set assertions on new Order
-                            (orderSaveRes.body.amount).should.equal(500);
+                            (orderSaveRes.body.discount).should.equal(order.discount);
                             should.exist(orderSaveRes.body.user);
                             should.equal(orderSaveRes.body.user._id, orphanId);
 
@@ -391,7 +360,7 @@ describe('Order CRUD tests', function() {
 
                                                 // Set assertions
                                                 (orderInfoRes.body._id).should.equal(orderSaveRes.body._id);
-                                                (orderInfoRes.body.amount).should.equal(500);
+                                                (orderInfoRes.body.discount).should.equal(order.discount);
                                                 should.equal(orderInfoRes.body.user, undefined);
 
                                                 // Call the assertion callback

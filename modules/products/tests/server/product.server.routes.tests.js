@@ -6,6 +6,7 @@ var should = require('should'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
   Product = mongoose.model('Product'),
+  Shipping = mongoose.model('Shipping'),
   Shop = mongoose.model('Shop'),
   express = require(path.resolve('./config/lib/express'));
 
@@ -17,6 +18,7 @@ var app,
   credentials,
   user,
   product,
+  shipping,
   shop;
 
 /**
@@ -50,6 +52,12 @@ describe('Product CRUD tests', function () {
       provider: 'local'
     });
 
+    shipping = new Shipping({
+      name: 'shipping name',
+      detail: 'shipping detail',
+      days: 10
+    });
+
     shop = new Shop({
       name: 'Shop name',
       detail: 'Shop detail',
@@ -67,28 +75,35 @@ describe('Product CRUD tests', function () {
     // Save a user to the test db and create new Product
     user.save(function () {
       shop.save(function () {
-        product = {
-          name: 'Product name',
-          detail: 'Product detail',
-          unitprice: 100,
-          qty: 10,
-          img: [{
-            url: 'img url',
-            id: 'img id'
-          }],
-          preparedays: 10,
-          favorite: [{
-            customerid: user,
-            favdate: new Date('2017-08-21')
-          }],
-          historylog: [{
-            customerid: user,
-            hisdate: new Date('2017-08-21')
-          }],
-          shopseller: shop
-        };
-
-        done();
+        shipping.save(function () {
+          product = {
+            name: 'Product name',
+            detail: 'Product detail',
+            unitprice: 100,
+            qty: 10,
+            img: [{
+              url: 'img url',
+              id: 'img id'
+            }],
+            preparedays: 10,
+            favorite: [{
+              customerid: user,
+              favdate: new Date('2017-08-21')
+            }],
+            historylog: [{
+              customerid: user,
+              hisdate: new Date('2017-08-21')
+            }],
+            shippings: [{
+              shipping: shipping,
+              shippingprice: 10,
+              shippingstartdate: new Date('2017-08-21'),
+              shippingenddate: new Date('2017-08-21')
+            }],
+            shopseller: shop
+          };
+          done();
+        });
       });
     });
   });
@@ -451,7 +466,9 @@ describe('Product CRUD tests', function () {
   afterEach(function (done) {
     User.remove().exec(function () {
       Shop.remove().exec(function () {
-        Product.remove().exec(done);
+        Shipping.remove().exec(function () {
+          Product.remove().exec(done);
+        });
       });
     });
   });

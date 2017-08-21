@@ -40,6 +40,11 @@ var OrderSchema = new Schema({
     amount: Number,
     discount: Number,
     totalamount: Number,
+    status: {
+        type: String,
+        enum: ['confirm', 'complete'],
+        default: 'confirm'
+    },
     created: {
         type: Date,
         default: Date.now
