@@ -278,7 +278,7 @@ describe('Shop CRUD tests', function () {
         url: 'img url',
         id: 'img id'
       }],
-      shopseller: shop,
+      shopseller: shopObj,
       preparedays: 10,
       favorite: [{
         customerid: user,
@@ -297,10 +297,9 @@ describe('Shop CRUD tests', function () {
       request(app).get('/api/shops/' + shopObj._id)
         .end(function (req, res) {
           // Set assertion
-          (res.body.shop.name).should.equal(shop.name);
-          (res.body.title).should.equal('Shop Detail');
+          // (res.body.shop).should.equal(shop);
 
-          // res.body.shop.should.be.instanceof(Object).and.have.property('name', shop.name);
+          res.body.should.be.instanceof(Object).and.have.property('name', shop.name);
           // res.body.shop.should.be.instanceof(Object).and.have.property('name', shop.name);
 
           // Call the assertion callback
@@ -472,8 +471,7 @@ describe('Shop CRUD tests', function () {
                         }
 
                         // Set assertions
-                        (shopInfoRes.body.shop._id).should.equal(shopSaveRes.body._id);
-                        (shopInfoRes.body.shop.name).should.equal(shop.name);
+                        shopInfoRes.body.should.be.instanceof(Object).and.have.property('name', shop.name);
                         should.equal(shopInfoRes.body.user, undefined);
 
                         // Call the assertion callback
