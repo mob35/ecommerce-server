@@ -7,7 +7,7 @@ var should = require('should'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
   Product = mongoose.model('Product'),
-  // Shipping = mongoose.model('Shipping'),
+  Shipping = mongoose.model('Shipping'),
   Shop = mongoose.model('Shop');
 
 /**
@@ -15,7 +15,7 @@ var should = require('should'),
  */
 var user,
   product,
-  // shipping,
+  shipping,
   shop;
 
 /**
@@ -46,47 +46,46 @@ describe('Product Model Unit Tests:', function () {
       },
     });
 
-    // shipping = new Shipping({
-    //   name: 'shipping name',
-    //   detail: 'shipping detail',
-    //   days: 10
-    // });
+    shipping = new Shipping({
+      name: 'shipping name',
+      detail: 'shipping detail',
+      days: 10
+    });
 
     user.save(function () {
       shop.save(function () {
-        product = new Product({
-          name: 'Product Name',
-          detail: 'Product detail',
-          unitprice: 100,
-          qty: 10,
-          img: [{
-            url: 'img url',
-            id: 'img id'
-          }],
-          preparedays: 10,
-          favorite: [{
-            customerid: user,
-            favdate: new Date('2017-08-21')
-          }],
-          historylog: [{
-            customerid: user,
-            hisdate: new Date('2017-08-21')
-          }],
-          // shippings: [{
-          //   shipping: {
-          //     type: Schema.ObjectId,
-          //     ref: 'Shipping'
-          //   },
-          //   shippingprice: 10,
-          //   shippingstartdate: new Date('2017-08-21'),
-          //   shippingenddate: new Date('2017-08-21')
-          // }],
-          shopseller: shop,
-          user: user
+        shipping.save(function () {
+          product = new Product({
+            name: 'Product Name',
+            detail: 'Product detail',
+            unitprice: 100,
+            qty: 10,
+            img: [{
+              url: 'img url',
+              id: 'img id'
+            }],
+            preparedays: 10,
+            favorite: [{
+              customerid: user,
+              favdate: new Date('2017-08-21')
+            }],
+            historylog: [{
+              customerid: user,
+              hisdate: new Date('2017-08-21')
+            }],
+            shippings: [{
+              shipping: shipping,
+              shippingprice: 10,
+              shippingstartdate: new Date('2017-08-21'),
+              shippingenddate: new Date('2017-08-21')
+            }],
+            shopseller: shop,
+            user: user
 
+          });
+
+          done();
         });
-
-        done();
       });
     });
   });
@@ -138,6 +137,15 @@ describe('Product Model Unit Tests:', function () {
 
     it('should be able to show an error when try to save without shopseller', function (done) {
       product.shopseller = '';
+
+      return product.save(function (err) {
+        should.exist(err);
+        done();
+      });
+    });
+
+    it('should be able to show an error when try to save without shipping', function (done) {
+      product.shippings = [];
 
       return product.save(function (err) {
         should.exist(err);

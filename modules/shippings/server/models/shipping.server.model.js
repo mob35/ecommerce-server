@@ -10,7 +10,10 @@ var mongoose = require('mongoose'),
  * Shipping Schema
  */
 var ShippingSchema = new Schema({
-    name: String,
+    name: {
+        type: String,
+        required: 'Please fill Shipping name'
+    },
     detail: String,
     days: Number,
     created: {

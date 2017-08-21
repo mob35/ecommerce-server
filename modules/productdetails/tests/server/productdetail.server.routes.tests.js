@@ -7,6 +7,7 @@ var should = require('should'),
   User = mongoose.model('User'),
   Product = mongoose.model('Product'),
   Shop = mongoose.model('Shop'),
+  Shipping = mongoose.model('Shipping'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -17,6 +18,7 @@ var app,
   credentials,
   user,
   shop,
+  shipping,
   agent;
 
 /**
@@ -63,6 +65,12 @@ describe('get product detail', function () {
       },
     });
 
+    shipping = new Shipping({
+      name: 'shipping name',
+      detail: 'shipping detail',
+      days: 10
+    });
+
     product = new Product({
       name: 'Product name',
       detail: 'Product detail',
@@ -81,11 +89,19 @@ describe('get product detail', function () {
         customerid: user,
         hisdate: new Date('2017-08-21')
       }],
+      shippings: [{
+        shipping: shipping,
+        shippingprice: 10,
+        shippingstartdate: new Date('2017-08-21'),
+        shippingenddate: new Date('2017-08-21')
+      }],
       shopseller: shop
     });
     user.save(function () {
-      shop.save(function () {
-        done();
+      shipping.save(function () {
+        shop.save(function () {
+          done();
+        });
       });
     });
   });
@@ -102,7 +118,7 @@ describe('get product detail', function () {
     // done();
   });
 
-  it('get product by id', function (done) {
+  it('get productdetail by id', function (done) {
 
     // Create new Product model instance
     var productObj = new Product(product);
@@ -125,6 +141,10 @@ describe('get product detail', function () {
           (products.historylog[0].hisdate).should.match(productObj.historylog[0].hisdate);
           (products.qty).should.match(productObj.qty);
           (products.shop).should.match(shop.id);
+          (products.shippings[0].shipping).should.match(shipping.id);
+          (products.shippings[0].shippingprice).should.match(productObj.shippings[0].shippingprice);
+          (products.shippings[0].shippingstartdate).should.match(productObj.shippings[0].shippingstartdate);
+          (products.shippings[0].shippingenddate).should.match(productObj.shippings[0].shippingenddate);
           done();
         });
     });
@@ -134,7 +154,9 @@ describe('get product detail', function () {
   afterEach(function (done) {
     User.remove().exec(function () {
       Shop.remove().exec(function () {
-        Product.remove().exec(done);
+        Shipping.remove().exec(function () {
+          Product.remove().exec(done);
+        });
       });
     });
   });

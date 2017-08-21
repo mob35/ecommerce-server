@@ -47,6 +47,7 @@ exports.read = function (req, res) {
     "historylog": req.product.historylog,
     "preparedays": req.product.preparedays,
     "qty": req.product.qty,
+    "shippings": req.product.shippings,
     "shop": req.product.shopseller
   });
 };
