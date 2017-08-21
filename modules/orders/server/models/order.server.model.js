@@ -45,6 +45,7 @@ var OrderSchema = new Schema({
         enum: ['confirm', 'complete'],
         default: 'confirm'
     },
+    cart: String,
     created: {
         type: Date,
         default: Date.now

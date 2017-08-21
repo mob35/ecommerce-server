@@ -110,6 +110,7 @@ describe('Create Payment', function() {
                             creditcvc: '222',
                             counterservice: ''
                         },
+                        cart: cart.id,
                         discount: 100,
                     };
                     done();
@@ -132,38 +133,61 @@ describe('Create Payment', function() {
                 if (signinErr) {
                     return done(signinErr);
                 }
-
                 // Get the userId
                 var userId = user.id;
-
-                // Save a new Order
-                agent.post('/api/payments')
-                    .send(order)
-                    .expect(200)
-                    .end(function(orderSaveErr, orderSaveRes) {
-                        // Handle Order save error
-                        if (orderSaveErr) {
-                            return done(orderSaveErr);
+                agent.get('/api/carts')
+                    .end(function(cart1GetErr, cart1) {
+                        // Handle Orders save error
+                        if (cart1GetErr) {
+                            return done(cart1GetErr);
                         }
+                        (cart1.body.length).should.equal(1);
 
-                        // Get a list of Orders
-                        agent.get('/api/orders')
-                            .end(function(ordersGetErr, ordersGetRes) {
-                                // Handle Orders save error
-                                if (ordersGetErr) {
-                                    return done(ordersGetErr);
+
+                        // Save a new Order
+                        agent.post('/api/payments')
+                            .send(order)
+                            .expect(200)
+                            .end(function(orderSaveErr, orderSaveRes) {
+                                // Handle Order save error
+                                if (orderSaveErr) {
+                                    return done(orderSaveErr);
                                 }
 
-                                // Get Orders list
-                                var orders = ordersGetRes.body;
+                                // Get a list of Orders
+                                agent.get('/api/orders')
+                                    .end(function(ordersGetErr, ordersGetRes) {
+                                        // Handle Orders save error
+                                        if (ordersGetErr) {
+                                            return done(ordersGetErr);
+                                        }
 
-                                // Set assertions
-                                (orders[0].user._id).should.equal(userId);
-                                (orders[0].amount).should.match(100);
-                                (orders[0].totalamount).should.match(0);
+                                        // Get Orders list
+                                        var orders = ordersGetRes.body;
 
-                                // Call the assertion callback
-                                done();
+                                        // Set assertions
+                                        (orders[0].user._id).should.equal(userId);
+                                        (orders[0].amount).should.match(100);
+                                        (orders[0].totalamount).should.match(0);
+
+                                        // Call the assertion callback
+                                        agent.get('/api/carts')
+                                            .end(function(cartGetErr, cartGetRes) {
+                                                // Handle Orders save error
+                                                if (cartGetErr) {
+                                                    return done(cartGetErr);
+                                                }
+
+                                                // Get Orders list
+                                                var cart = cartGetRes.body;
+
+                                                // Set assertions
+                                                (cart.length).should.equal(0);
+
+                                                // Call the assertion callback
+                                                done();
+                                            });
+                                    });
                             });
                     });
             });
