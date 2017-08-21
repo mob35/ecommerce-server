@@ -17,10 +17,6 @@ module.exports = function (app) {
     .put(carts.update)
     .delete(carts.delete);
 
-  app.route('/api/add/cart').all(cartsPolicy.isAllowed)
-    .get(carts.list)
-    .post(carts.findUserCart, carts.processingAddUserCart, carts.saveUserCart, carts.updateUserCart);
-
   // Finish by binding the Cart middleware
   app.param('cartId', carts.cartByID);
 };

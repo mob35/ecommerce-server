@@ -6,13 +6,15 @@
 var should = require('should'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
-  Cart = mongoose.model('Cart');
+  Cart = mongoose.model('Cart'),
+  Product = mongoose.model('Product');
 
 /**
  * Globals
  */
 var user,
-  cart;
+  cart,
+  product;
 
 /**
  * Unit tests
@@ -28,17 +30,40 @@ describe('Cart Model Unit Tests:', function () {
       password: 'password'
     });
 
-    user.save(function () {
-      cart = new Cart({
-        products: [{
-          itemamount: 100,
-          qty: 1
-        }],
-        amount: 100,
-        user: user
-      });
+    product = new Product({
+      name: 'Product name',
+      detail: 'Product detail',
+      unitprice: 100,
+      qty: 10,
+      img: [{
+        url: 'img url',
+        id: 'img id'
+      }],
+      preparedays: 10,
+      favorite: [{
+        customerid: user,
+        favdate: new Date('2017-08-21')
+      }],
+      historylog: [{
+        customerid: user,
+        hisdate: new Date('2017-08-21')
+      }]
+    });
 
-      done();
+    user.save(function () {
+      product.save(function () {
+        cart = new Cart({
+          products: [{
+            product: product,
+            itemamount: 100,
+            qty: 1
+          }],
+          amount: 100,
+          user: user
+        });
+
+        done();
+      });
     });
   });
 
@@ -63,8 +88,10 @@ describe('Cart Model Unit Tests:', function () {
 
   afterEach(function (done) {
     Cart.remove().exec(function () {
-      User.remove().exec(function () {
-        done();
+      Product.remove().exec(function () {
+        User.remove().exec(function () {
+          done();
+        });
       });
     });
   });
