@@ -60,7 +60,7 @@ var ProductSchema = new Schema({
     }]
   },
   shopseller: {
-    // required: 'Please fill Product shopseller',
+    required: 'Please fill Product shopseller',
     type: Schema.ObjectId,
     ref: 'Shop'
   },

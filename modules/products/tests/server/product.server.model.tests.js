@@ -6,13 +6,15 @@
 var should = require('should'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
-  Product = mongoose.model('Product');
+  Product = mongoose.model('Product'),
+  Shop = mongoose.model('Shop');
 
 /**
  * Globals
  */
 var user,
-  product;
+  product,
+  shop;
 
 /**
  * Unit tests
@@ -28,30 +30,47 @@ describe('Product Model Unit Tests:', function () {
       password: 'password'
     });
 
-    user.save(function () {
-      product = new Product({
-        name: 'Product Name',
-        detail: 'Product detail',
-        unitprice: 100,
-        qty: 10,
-        img: [{
-          url: 'img url',
-          id: 'img id'
-        }],
-        preparedays: 10,
-        favorite: [{
-          customerid: user,
-          favdate: new Date('2017-08-21')
-        }],
-        historylog: [{
-          customerid: user,
-          hisdate: new Date('2017-08-21')
-        }],
-        user: user,
-        // shopseller: ''
-      });
+    shop = new Shop({
+      name: 'Shop name',
+      detail: 'Shop detail',
+      email: 'Shop email',
+      tel: 'Shop tel',
+      img: [{
+        url: 'img url'
+      }],
+      map: {
+        lat: 'map lat',
+        lng: 'map lng'
+      },
+    });
 
-      done();
+    user.save(function () {
+      shop.save(function () {
+        product = new Product({
+          name: 'Product Name',
+          detail: 'Product detail',
+          unitprice: 100,
+          qty: 10,
+          img: [{
+            url: 'img url',
+            id: 'img id'
+          }],
+          preparedays: 10,
+          favorite: [{
+            customerid: user,
+            favdate: new Date('2017-08-21')
+          }],
+          historylog: [{
+            customerid: user,
+            hisdate: new Date('2017-08-21')
+          }],
+          shopseller: shop,
+          user: user
+
+        });
+
+        done();
+      });
     });
   });
 
@@ -93,6 +112,15 @@ describe('Product Model Unit Tests:', function () {
 
     it('should be able to show an error when try to save without preparedays', function (done) {
       product.preparedays = null;
+
+      return product.save(function (err) {
+        should.exist(err);
+        done();
+      });
+    });
+
+    it('should be able to show an error when try to save without shopseller', function (done) {
+      product.shopseller = '';
 
       return product.save(function (err) {
         should.exist(err);
