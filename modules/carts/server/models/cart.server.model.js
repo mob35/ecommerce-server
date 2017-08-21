@@ -12,6 +12,10 @@ var mongoose = require('mongoose'),
 var CartSchema = new Schema({
   products: {
     type: [{
+      product: {
+        type: Schema.ObjectId,
+        ref: 'Product'
+      },
       itemamount: {
         type: Number
       },

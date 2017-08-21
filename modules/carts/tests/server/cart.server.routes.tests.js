@@ -6,6 +6,7 @@ var should = require('should'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
   Cart = mongoose.model('Cart'),
+  Product = mongoose.model('Product'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -15,7 +16,8 @@ var app,
   agent,
   credentials,
   user,
-  cart;
+  cart,
+  product;
 
 /**
  * Cart routes tests
@@ -48,18 +50,39 @@ describe('Cart CRUD tests', function () {
       provider: 'local'
     });
 
+    product = new Product({
+      name: 'Product name',
+      detail: 'Product detail',
+      unitprice: 100,
+      qty: 10,
+      img: [{
+        url: 'img url',
+        id: 'img id'
+      }],
+      preparedays: 10,
+      favorite: [{
+        customerid: user,
+        favdate: new Date('2017-08-21')
+      }],
+      historylog: [{
+        customerid: user,
+        hisdate: new Date('2017-08-21')
+      }]
+    });
+
     // Save a user to the test db and create new Cart
     user.save(function () {
-      cart = {
-        products: [{
-          itemamount: 100,
-          qty: 1
-        }],
-        amount: 100,
-        user: user
-      };
-
-      done();
+      product.save(function () {
+        cart = {
+          products: [{
+            itemamount: 100,
+            qty: 1
+          }],
+          amount: 100,
+          user: user
+        };
+        done();
+      });
     });
   });
 
@@ -408,7 +431,7 @@ describe('Cart CRUD tests', function () {
     });
   });
 
-  it('should be able to save a Cart if logged in', function (done) {
+  it('MDW : should be able add to cart (New)', function (done) {
     agent.post('/api/auth/signin')
       .send(credentials)
       .expect(200)
@@ -417,13 +440,11 @@ describe('Cart CRUD tests', function () {
         if (signinErr) {
           return done(signinErr);
         }
-
         // Get the userId
         var userId = user.id;
-
         // Save a new Cart
-        agent.post('/api/save/cart')
-          .send(cart)
+        agent.post('/api/add/cart')
+          .send(product)
           .expect(200)
           .end(function (cartSaveErr, cartSaveRes) {
             // Handle Cart save error
@@ -433,14 +454,56 @@ describe('Cart CRUD tests', function () {
             // Get Carts list
             var carts = cartSaveRes.body;
             // Set assertions
-            (carts[0].user._id).should.equal(userId);
-            (carts[0].amount).should.match(100);
-
+            (carts.user._id).should.equal(userId);
+            (carts.products.length).should.match(1);
+            (carts.amount).should.match(100);
             // Call the assertion callback
             done();
           });
       });
   });
+
+  // it('MDW : should be able add to cart (Duplicate)', function (done) {
+  //   agent.post('/api/auth/signin')
+  //     .send(credentials)
+  //     .expect(200)
+  //     .end(function (signinErr, signinRes) {
+  //       // Handle signin error
+  //       if (signinErr) {
+  //         return done(signinErr);
+  //       }
+  //       // Get the userId
+  //       var userId = user.id;
+  //       // Save a new Cart
+  //       agent.post('/api/add/cart')
+  //         .send(product)
+  //         .expect(200)
+  //         .end(function (cartSaveErr, cartSaveRes) {
+  //           // Handle Cart save error
+  //           if (cartSaveErr) {
+  //             return done(cartSaveErr);
+  //           }
+
+  //           agent.post('/api/add/cart')
+  //             .send(product)
+  //             .expect(200)
+  //             .end(function (cartSaveErr, cartSaveRes) {
+  //               // Handle Cart save error
+  //               if (cartSaveErr) {
+  //                 return done(cartSaveErr);
+  //               }
+  //               // Get Carts list
+  //               var carts = cartSaveRes.body;
+  //               // Set assertions
+  //               (carts.user._id).should.equal(userId);
+  //               (carts.products.length).should.match(2);
+  //               (carts.amount).should.match(200);
+  //               // Call the assertion callback
+  //               done();
+  //             });
+  //         });
+  //     });
+  // });
 
   afterEach(function (done) {
     User.remove().exec(function () {
