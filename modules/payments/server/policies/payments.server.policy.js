@@ -9,56 +9,47 @@ var acl = require('acl');
 acl = new acl(new acl.memoryBackend());
 
 /**
- * Invoke Carts Permissions
+ * Invoke Payments Permissions
  */
 exports.invokeRolesPolicies = function () {
   acl.allow([{
     roles: ['admin'],
     allows: [{
-      resources: '/api/carts',
+      resources: '/api/payments',
       permissions: '*'
     }, {
-      resources: '/api/carts/:cartId',
-      permissions: '*'
-    }, {
-      resources: '/api/add/cart',
+      resources: '/api/payments/:paymentId',
       permissions: '*'
     }]
   }, {
     roles: ['user'],
     allows: [{
-      resources: '/api/carts',
+      resources: '/api/payments',
       permissions: ['get', 'post']
     }, {
-      resources: '/api/carts/:cartId',
+      resources: '/api/payments/:paymentId',
       permissions: ['get']
-    }, {
-      resources: '/api/add/cart',
-      permissions: ['get', 'post']
     }]
   }, {
     roles: ['guest'],
     allows: [{
-      resources: '/api/carts',
+      resources: '/api/payments',
       permissions: ['get']
     }, {
-      resources: '/api/carts/:cartId',
-      permissions: ['get']
-    }, {
-      resources: '/api/add/cart',
+      resources: '/api/payments/:paymentId',
       permissions: ['get']
     }]
   }]);
 };
 
 /**
- * Check If Carts Policy Allows
+ * Check If Payments Policy Allows
  */
 exports.isAllowed = function (req, res, next) {
   var roles = (req.user) ? req.user.roles : ['guest'];
 
-  // If an Cart is being processed and the current user created it then allow any manipulation
-  if (req.cart && req.user && req.cart.user && req.cart.user.id === req.user.id) {
+  // If an Payment is being processed and the current user created it then allow any manipulation
+  if (req.payment && req.user && req.payment.user && req.payment.user.id === req.user.id) {
     return next();
   }
 
