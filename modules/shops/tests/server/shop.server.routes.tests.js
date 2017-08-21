@@ -298,6 +298,7 @@ describe('Shop CRUD tests', function () {
         .end(function (req, res) {
           // Set assertion
           (res.body.shop.name).should.equal(shop.name);
+          (res.body.shop.products.length).should.equal(1);
           (res.body.title).should.equal('Shop Detail');
 
           // res.body.shop.should.be.instanceof(Object).and.have.property('name', shop.name);
