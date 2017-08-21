@@ -52,6 +52,27 @@ var UserSchema = new Schema({
     default: '',
     validate: [validateLocalStrategyEmail, 'Please fill a valid email address']
   },
+  tel: {
+    type: String,
+    validate: [validateLocalStrategyProperty, 'Please fill in your tel']
+  },
+  address: {
+    type: [{
+      address: String,
+      district: String,
+      subdistrict: String,
+      province: String,
+      postcode: String,
+      desc: String
+    }]
+  },
+  img: {
+    url: {
+      type: String,
+      default: 'default.png'
+    },
+    id: String
+  },
   username: {
     type: String,
     unique: 'Username already exists',
@@ -70,18 +91,10 @@ var UserSchema = new Schema({
   salt: {
     type: String
   },
-  profileImageURL: {
-    type: String,
-    default: 'default.png'
-  },
-  employeeprofile: {
-    type: Schema.ObjectId,
-    ref: 'Employeeprofile'
-  },
-  company: {
-    type: Schema.ObjectId,
-    ref: 'Company'
-  },
+  // profileImageURL: {
+  //   type: String,
+  //   default: 'default.png'
+  // },
   provider: {
     type: String,
     required: 'Provider is required'
@@ -91,7 +104,7 @@ var UserSchema = new Schema({
   roles: {
     type: [{
       type: String,
-      enum: ['user', 'admin']
+      enum: ['user', 'admin', 'seller']
     }],
     default: ['user'],
     required: 'Please provide at least one role'
