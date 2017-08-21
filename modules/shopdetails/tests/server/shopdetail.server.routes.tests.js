@@ -5,6 +5,7 @@ var should = require('should'),
   path = require('path'),
   mongoose = require('mongoose'),
   Shop = mongoose.model('Shop'),
+  Shipping = mongoose.model('Shipping'),
   Product = mongoose.model('Product'),
   User = mongoose.model('User'),
   express = require(path.resolve('./config/lib/express'));
@@ -18,7 +19,8 @@ var app,
   user,
   shop,
   product,
-  shopdetail;
+  shopdetail,
+  shipping;
 
 /**
  * Shopdetail routes tests
@@ -51,6 +53,12 @@ describe('Shopdetail CRUD tests', function () {
       provider: 'local'
     });
 
+    shipping = new Shipping({
+      name: 'shipping name',
+      detail: 'shipping detail',
+      days: 10
+    });
+
     shop = new Shop({
       name: 'Shop Name',
       detail: 'Shop detail of Shop Name',
@@ -77,6 +85,12 @@ describe('Shopdetail CRUD tests', function () {
         id: 'img id'
       }],
       shopseller: shop,
+      shippings: [{
+        shipping: shipping,
+        shippingprice: 10,
+        shippingstartdate: new Date('2017-08-21'),
+        shippingenddate: new Date('2017-08-21')
+      }],
       preparedays: 10,
       favorite: [{
         customerid: user,
