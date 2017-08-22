@@ -14,8 +14,9 @@ var path = require('path'),
 // Custom cart
 
 exports.findUserCart = function (req, res, next) {
+  // req.user._id 
   Cart.find({
-      user: req.user._id
+      user: req.body.user._id 
     })
     .populate('user', 'displayName')
     .populate({
