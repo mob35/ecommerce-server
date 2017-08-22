@@ -112,7 +112,7 @@ exports.getlastvisit = function (req, res, next) {
 };
 
 exports.getpopularproducts = function (req, res, next) {
-  Product.find({}, 'name imgUrl price')
+  Product.find({}, 'name img unitprice')
     .sort({ 'views': 1 })
     .skip(0).limit(10)
     .exec(function (err, result) {
