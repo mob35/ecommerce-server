@@ -191,9 +191,9 @@ exports.cartByID = function (req, res, next) {
 };
 
 exports.update = function (req, res) {
-  var cart = req.cart;
+  var cart = req.body;
 
-  cart = _.extend(cart, req.body);
+  // cart = _.extend(cart, req.body);
 
   cart.save(function (err) {
     if (err) {
