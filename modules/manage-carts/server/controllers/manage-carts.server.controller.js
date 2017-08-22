@@ -193,7 +193,8 @@ exports.cartByID = function (req, res, next) {
 exports.update = function (req, res) {
   var cart = req.cart;
 
-  cart = req.body
+  cart.products = req.body.products;
+  cart.amount = req.body.amount; 
 
   cart.save(function (err) {
     if (err) {
