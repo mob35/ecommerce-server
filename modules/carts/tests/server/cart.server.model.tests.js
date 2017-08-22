@@ -75,15 +75,6 @@ describe('Cart Model Unit Tests:', function () {
         done();
       });
     });
-
-    it('should be able to show an error when try to save without products', function (done) {
-      cart.products = [];
-
-      return cart.save(function (err) {
-        should.exist(err);
-        done();
-      });
-    });
   });
 
   afterEach(function (done) {

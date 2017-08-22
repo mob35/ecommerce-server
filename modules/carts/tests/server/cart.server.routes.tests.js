@@ -142,36 +142,6 @@ describe('Cart CRUD tests', function () {
       });
   });
 
-  it('should not be able to save an Cart if no products is provided', function (done) {
-    // Invalidate name field
-    cart.products = [];
-
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-
-        // Get the userId
-        var userId = user.id;
-
-        // Save a new Cart
-        agent.post('/api/carts')
-          .send(cart)
-          .expect(400)
-          .end(function (cartSaveErr, cartSaveRes) {
-            // Set message assertion
-            (cartSaveRes.body.message).should.match('Please fill Cart items');
-
-            // Handle Cart save error
-            done(cartSaveErr);
-          });
-      });
-  });
-
   it('should be able to update an Cart if signed in', function (done) {
     agent.post('/api/auth/signin')
       .send(credentials)
