@@ -97,7 +97,7 @@ exports.gettitleandbanner = function (req, res, next) {
 };
 
 exports.getlastvisit = function (req, res, next) {
-  Product.find({ 'historylog': { $in: [req.body.userid] } }, 'name imgUrl price')
+  Product.find({ 'historylog': { $in: [req.body.userid] } }, 'name img unitprice')
     .skip(0).limit(10)
     .exec(function (err, result) {
       if (err) {
@@ -128,7 +128,7 @@ exports.getpopularproducts = function (req, res, next) {
 };
 
 exports.getpopularshops = function (req, res, next) {
-  Shop.find({}, 'title imgUrl')
+  Shop.find({}, 'name img')
     .sort({ 'views': 1 })
     .skip(0).limit(10)
     .exec(function (err, result) {
