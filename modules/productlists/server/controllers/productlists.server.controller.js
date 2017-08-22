@@ -13,8 +13,8 @@ var path = require('path'),
 // /**
 //  * List of Productlists
 //  */
-exports.read = function(req, res, next) {
-    Product.find().sort('-created').exec(function(err, productlists) {
+exports.read = function (req, res, next) {
+    Product.find().sort('-created').exec(function (err, productlists) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -25,6 +25,6 @@ exports.read = function(req, res, next) {
         }
     });
 };
-exports.listproduct = function(req, res) {
-    res.jsonp(req.listprod);
+exports.listproduct = function (req, res) {
+    res.jsonp({ product: req.listprod, title: 'Product list' });
 };
