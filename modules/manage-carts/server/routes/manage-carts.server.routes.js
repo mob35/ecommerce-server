@@ -18,7 +18,9 @@ module.exports = function (app) {
     .post(manageCarts.findUserCart, manageCarts.processingDeleteUserCart, manageCarts.updateUserCart);
 
   app.route('/api/manage-carts/get-by-user/:manageCartId')
-    .get(manageCarts.findUserCart, manageCarts.sendCart);
+    .get(manageCarts.findUserCart, manageCarts.sendCart)
+    .put(manageCarts.cartByID, manageCarts.update);
+
   // .all(manageCartsPolicy.isAllowed)
   // Finish by binding the Manage cart middleware
   app.param('manageCartId', manageCarts.manageCartByID);
