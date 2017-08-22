@@ -166,7 +166,7 @@ exports.updateUserCart = function (req, res) {
 };
 
 exports.sendCart = function (req, res) {
-  var cart = req.cart ? req.cart[0].toJSON() : {};
+  var cart = req.cart[0] ? req.cart[0].toJSON() : {};
 
   res.jsonp(cart);
   // res.jsonp(req.cart[0]);
