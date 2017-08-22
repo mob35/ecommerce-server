@@ -113,7 +113,8 @@ describe('Manage cart CRUD tests', function () {
         customerid: user,
         hisdate: new Date('2017-08-21')
       }],
-      shopseller: shop
+      shopseller: shop,
+      selecteduser : 'a' // Test Required
     });
 
     product2 = new Product({
@@ -140,7 +141,9 @@ describe('Manage cart CRUD tests', function () {
         customerid: user,
         hisdate: new Date('2017-08-21')
       }],
-      shopseller: shop
+      shopseller: shop,
+      selecteduser : 'a' // Test Required
+      
     });
 
     cart2 = new Cart({
@@ -191,6 +194,7 @@ describe('Manage cart CRUD tests', function () {
         // Get the userId
         var userId = user.id;
         // Save a new Cart
+        product.selecteduser = user;
         agent.post('/api/manage-carts/add')
           .send(product)
           .expect(200)
@@ -211,297 +215,307 @@ describe('Manage cart CRUD tests', function () {
       });
   });
 
-  it('MDW : should be able add to cart (Duplicate)', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-        // Get the userId
-        var userId = user.id;
-        // Save a new Cart
-        agent.post('/api/manage-carts/add')
-          .send(product)
-          .expect(200)
-          .end(function (cartSaveErr, cartSaveRes) {
-            // Handle Cart save error
-            if (cartSaveErr) {
-              return done(cartSaveErr);
-            }
+  // it('MDW : should be able add to cart (Duplicate)', function (done) {
+  //   agent.post('/api/auth/signin')
+  //     .send(credentials)
+  //     .expect(200)
+  //     .end(function (signinErr, signinRes) {
+  //       // Handle signin error
+  //       if (signinErr) {
+  //         return done(signinErr);
+  //       }
+  //       // Get the userId
+  //       var userId = user.id;
+  //       product.selecteduser = user;
 
-            agent.post('/api/manage-carts/add')
-              .send(product)
-              .expect(200)
-              .end(function (cartSaveErr, cartSaveRes) {
-                // Handle Cart save error
-                if (cartSaveErr) {
-                  return done(cartSaveErr);
-                }
-                // Get Carts list
-                var carts = cartSaveRes.body;
-                // Set assertions
-                (carts.user._id).should.equal(userId);
-                (carts.products.length).should.match(1);
-                (carts.amount).should.match(200);
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
-  });
+  //       // Save a new Cart
+  //       agent.post('/api/manage-carts/add')
+  //         .send(product)
+  //         .expect(200)
+  //         .end(function (cartSaveErr, cartSaveRes) {
+  //           // Handle Cart save error
+  //           if (cartSaveErr) {
+  //             return done(cartSaveErr);
+  //           }
 
-  it('MDW : should be able add to cart (New have data)', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-        // Get the userId
-        var userId = user.id;
-        // Save a new Cart
-        agent.post('/api/manage-carts/add')
-          .send(product)
-          .expect(200)
-          .end(function (cartSaveErr, cartSaveRes) {
-            // Handle Cart save error
-            if (cartSaveErr) {
-              return done(cartSaveErr);
-            }
+  //           agent.post('/api/manage-carts/add')
+  //             .send(product)
+  //             .expect(200)
+  //             .end(function (cartSaveErr, cartSaveRes) {
+  //               // Handle Cart save error
+  //               if (cartSaveErr) {
+  //                 return done(cartSaveErr);
+  //               }
+  //               // Get Carts list
+  //               var carts = cartSaveRes.body;
+  //               // Set assertions
+  //               (carts.user._id).should.equal(userId);
+  //               (carts.products.length).should.match(1);
+  //               (carts.amount).should.match(200);
+  //               // Call the assertion callback
+  //               done();
+  //             });
+  //         });
+  //     });
+  // });
 
-            agent.post('/api/manage-carts/add')
-              .send(product)
-              .expect(200)
-              .end(function (cartSaveErr, cartSaveRes) {
-                // Handle Cart save error
-                if (cartSaveErr) {
-                  return done(cartSaveErr);
-                }
+  // it('MDW : should be able add to cart (New have data)', function (done) {
+  //   agent.post('/api/auth/signin')
+  //     .send(credentials)
+  //     .expect(200)
+  //     .end(function (signinErr, signinRes) {
+  //       // Handle signin error
+  //       if (signinErr) {
+  //         return done(signinErr);
+  //       }
+  //       // Get the userId
+  //       var userId = user.id;
+  //       product.selecteduser = user;
+  //       product2.selecteduser = user;
 
-                agent.post('/api/manage-carts/add')
-                  .send(product2)
-                  .expect(200)
-                  .end(function (cartSaveErr, cartSaveRes) {
-                    // Handle Cart save error
-                    if (cartSaveErr) {
-                      return done(cartSaveErr);
-                    }
-                    // Get Carts list
-                    var carts = cartSaveRes.body;
-                    // Set assertions
-                    (carts.user._id).should.equal(userId);
-                    (carts.products.length).should.match(2);
-                    (carts.products[0].qty).should.match(2);
-                    (carts.products[1].qty).should.match(1);
-                    (carts.amount).should.match(250);
-                    // Call the assertion callback
-                    done();
-                  });
-              });
-          });
-      });
-  });
+  //       // Save a new Cart
+  //       agent.post('/api/manage-carts/add')
+  //         .send(product)
+  //         .expect(200)
+  //         .end(function (cartSaveErr, cartSaveRes) {
+  //           // Handle Cart save error
+  //           if (cartSaveErr) {
+  //             return done(cartSaveErr);
+  //           }
 
-  it('MDW : should be able remove to cart (Duplicate)', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-        // Get the userId
-        var userId = user.id;
-        // Save a new Cart
-        agent.post('/api/manage-carts/add')
-          .send(product2)
-          .expect(200)
-          .end(function (cartSaveErr, cartSaveRes) {
-            // Handle Cart save error
-            if (cartSaveErr) {
-              return done(cartSaveErr);
-            }
+  //           agent.post('/api/manage-carts/add')
+  //             .send(product)
+  //             .expect(200)
+  //             .end(function (cartSaveErr, cartSaveRes) {
+  //               // Handle Cart save error
+  //               if (cartSaveErr) {
+  //                 return done(cartSaveErr);
+  //               }
 
-            agent.post('/api/manage-carts/add')
-              .send(product2)
-              .expect(200)
-              .end(function (cartSaveErr, cartSaveRes) {
-                // Handle Cart save error
-                if (cartSaveErr) {
-                  return done(cartSaveErr);
-                }
+  //               agent.post('/api/manage-carts/add')
+  //                 .send(product2)
+  //                 .expect(200)
+  //                 .end(function (cartSaveErr, cartSaveRes) {
+  //                   // Handle Cart save error
+  //                   if (cartSaveErr) {
+  //                     return done(cartSaveErr);
+  //                   }
+  //                   // Get Carts list
+  //                   var carts = cartSaveRes.body;
+  //                   // Set assertions
+  //                   (carts.user._id).should.equal(userId);
+  //                   (carts.products.length).should.match(2);
+  //                   (carts.products[0].qty).should.match(2);
+  //                   (carts.products[1].qty).should.match(1);
+  //                   (carts.amount).should.match(250);
+  //                   // Call the assertion callback
+  //                   done();
+  //                 });
+  //             });
+  //         });
+  //     });
+  // });
 
-                agent.post('/api/manage-carts/add')
-                  .send(product)
-                  .expect(200)
-                  .end(function (cartSaveErr, cartSaveRes) {
-                    // Handle Cart save error
-                    if (cartSaveErr) {
-                      return done(cartSaveErr);
-                    }
+  // it('MDW : should be able remove to cart (Duplicate)', function (done) {
+  //   agent.post('/api/auth/signin')
+  //     .send(credentials)
+  //     .expect(200)
+  //     .end(function (signinErr, signinRes) {
+  //       // Handle signin error
+  //       if (signinErr) {
+  //         return done(signinErr);
+  //       }
+  //       // Get the userId
+  //       var userId = user.id;
+  //       product.selecteduser = user;
+  //       product2.selecteduser = user;
 
-                    agent.post('/api/manage-carts/add')
-                      .send(product2)
-                      .expect(200)
-                      .end(function (cartSaveErr, cartSaveRes) {
-                        // Handle Cart save error
-                        if (cartSaveErr) {
-                          return done(cartSaveErr);
-                        }
+  //       // Save a new Cart
+  //       agent.post('/api/manage-carts/add')
+  //         .send(product2)
+  //         .expect(200)
+  //         .end(function (cartSaveErr, cartSaveRes) {
+  //           // Handle Cart save error
+  //           if (cartSaveErr) {
+  //             return done(cartSaveErr);
+  //           }
 
-                        agent.post('/api/manage-carts/add')
-                          .send(product)
-                          .expect(200)
-                          .end(function (cartSaveErr, cartSaveRes) {
-                            // Handle Cart save error
-                            if (cartSaveErr) {
-                              return done(cartSaveErr);
-                            }
+  //           agent.post('/api/manage-carts/add')
+  //             .send(product2)
+  //             .expect(200)
+  //             .end(function (cartSaveErr, cartSaveRes) {
+  //               // Handle Cart save error
+  //               if (cartSaveErr) {
+  //                 return done(cartSaveErr);
+  //               }
 
-                            agent.post('/api/manage-carts/remove')
-                              .send(product2)
-                              .expect(200)
-                              .end(function (cartSaveErr, cartSaveRes) {
-                                // Handle Cart save error
-                                if (cartSaveErr) {
-                                  return done(cartSaveErr);
-                                }
-                                // Get Carts list
-                                var carts = cartSaveRes.body;
-                                // Set assertions
-                                (carts.user._id).should.equal(userId);
-                                (carts.products.length).should.match(2);
-                                (carts.products[0].qty).should.match(2);
-                                (carts.products[1].qty).should.match(2);
-                                (carts.amount).should.match(300);
-                                // Call the assertion callback
-                                done();
-                              });
-                          });
-                      });
-                  });
-              });
-          });
-      });
-  });
+  //               agent.post('/api/manage-carts/add')
+  //                 .send(product)
+  //                 .expect(200)
+  //                 .end(function (cartSaveErr, cartSaveRes) {
+  //                   // Handle Cart save error
+  //                   if (cartSaveErr) {
+  //                     return done(cartSaveErr);
+  //                   }
 
-  it('MDW : should be able delete item to cart', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-        // Get the userId
-        var userId = user.id;
-        // Save a new Cart
-        agent.post('/api/manage-carts/add')
-          .send(product)
-          .expect(200)
-          .end(function (cartSaveErr, cartSaveRes) {
-            // Handle Cart save error
-            if (cartSaveErr) {
-              return done(cartSaveErr);
-            }
+  //                   agent.post('/api/manage-carts/add')
+  //                     .send(product2)
+  //                     .expect(200)
+  //                     .end(function (cartSaveErr, cartSaveRes) {
+  //                       // Handle Cart save error
+  //                       if (cartSaveErr) {
+  //                         return done(cartSaveErr);
+  //                       }
 
-            agent.post('/api/manage-carts/add')
-              .send(product2)
-              .expect(200)
-              .end(function (cartSaveErr, cartSaveRes) {
-                // Handle Cart save error
-                if (cartSaveErr) {
-                  return done(cartSaveErr);
-                }
+  //                       agent.post('/api/manage-carts/add')
+  //                         .send(product)
+  //                         .expect(200)
+  //                         .end(function (cartSaveErr, cartSaveRes) {
+  //                           // Handle Cart save error
+  //                           if (cartSaveErr) {
+  //                             return done(cartSaveErr);
+  //                           }
 
-                agent.post('/api/manage-carts/add')
-                  .send(product)
-                  .expect(200)
-                  .end(function (cartSaveErr, cartSaveRes) {
-                    // Handle Cart save error
-                    if (cartSaveErr) {
-                      return done(cartSaveErr);
-                    }
+  //                           agent.post('/api/manage-carts/remove')
+  //                             .send(product2)
+  //                             .expect(200)
+  //                             .end(function (cartSaveErr, cartSaveRes) {
+  //                               // Handle Cart save error
+  //                               if (cartSaveErr) {
+  //                                 return done(cartSaveErr);
+  //                               }
+  //                               // Get Carts list
+  //                               var carts = cartSaveRes.body;
+  //                               // Set assertions
+  //                               (carts.user._id).should.equal(userId);
+  //                               (carts.products.length).should.match(2);
+  //                               (carts.products[0].qty).should.match(2);
+  //                               (carts.products[1].qty).should.match(2);
+  //                               (carts.amount).should.match(300);
+  //                               // Call the assertion callback
+  //                               done();
+  //                             });
+  //                         });
+  //                     });
+  //                 });
+  //             });
+  //         });
+  //     });
+  // });
 
-                    agent.post('/api/manage-carts/add')
-                      .send(product2)
-                      .expect(200)
-                      .end(function (cartSaveErr, cartSaveRes) {
-                        // Handle Cart save error
-                        if (cartSaveErr) {
-                          return done(cartSaveErr);
-                        }
+  // it('MDW : should be able delete item to cart', function (done) {
+  //   agent.post('/api/auth/signin')
+  //     .send(credentials)
+  //     .expect(200)
+  //     .end(function (signinErr, signinRes) {
+  //       // Handle signin error
+  //       if (signinErr) {
+  //         return done(signinErr);
+  //       }
+  //       // Get the userId
+  //       var userId = user.id;
+  //       product.selecteduser = user;
+  //       product2.selecteduser = user;
+  //       // Save a new Cart
+  //       agent.post('/api/manage-carts/add')
+  //         .send(product)
+  //         .expect(200)
+  //         .end(function (cartSaveErr, cartSaveRes) {
+  //           // Handle Cart save error
+  //           if (cartSaveErr) {
+  //             return done(cartSaveErr);
+  //           }
 
-                        agent.post('/api/manage-carts/delete')
-                          .send(product2)
-                          .expect(200)
-                          .end(function (cartSaveErr, cartSaveRes) {
-                            // Handle Cart save error
-                            if (cartSaveErr) {
-                              return done(cartSaveErr);
-                            }
-                            // Get Carts list
-                            var carts = cartSaveRes.body;
-                            // Set assertions
-                            (carts.user._id).should.equal(userId);
-                            (carts.products.length).should.match(1);
-                            (carts.products[0].qty).should.match(2);
-                            (carts.amount).should.match(200);
-                            // Call the assertion callback
-                            done();
-                          });
-                      });
-                  });
-              });
-          });
-      });
-  });
+  //           agent.post('/api/manage-carts/add')
+  //             .send(product2)
+  //             .expect(200)
+  //             .end(function (cartSaveErr, cartSaveRes) {
+  //               // Handle Cart save error
+  //               if (cartSaveErr) {
+  //                 return done(cartSaveErr);
+  //               }
 
-  it('MDW : get cart by user login', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials2)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-        // Get the userId
-        var userId = user2.id;
-        // Save a new Cart
-        agent.post('/api/manage-carts/add')
-          .send(product)
-          .expect(200)
-          .end(function (cartSaveErr, cartSaveRes) {
-            // Handle Cart save error
-            if (cartSaveErr) {
-              return done(cartSaveErr);
-            }
+  //               agent.post('/api/manage-carts/add')
+  //                 .send(product)
+  //                 .expect(200)
+  //                 .end(function (cartSaveErr, cartSaveRes) {
+  //                   // Handle Cart save error
+  //                   if (cartSaveErr) {
+  //                     return done(cartSaveErr);
+  //                   }
 
-            agent.get('/api/manage-carts/get-by-user')
-              .end(function (cartSaveErr, cartSaveRes) {
-                // Handle Cart save error
-                if (cartSaveErr) {
-                  return done(cartSaveErr);
-                }
-                // Get Carts list
-                var carts = cartSaveRes.body;
-                // Set assertions
-                (carts.user._id).should.equal(userId);
-                (carts.products.length).should.match(1);
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
-  });
+  //                   agent.post('/api/manage-carts/add')
+  //                     .send(product2)
+  //                     .expect(200)
+  //                     .end(function (cartSaveErr, cartSaveRes) {
+  //                       // Handle Cart save error
+  //                       if (cartSaveErr) {
+  //                         return done(cartSaveErr);
+  //                       }
+
+  //                       agent.post('/api/manage-carts/delete')
+  //                         .send(product2)
+  //                         .expect(200)
+  //                         .end(function (cartSaveErr, cartSaveRes) {
+  //                           // Handle Cart save error
+  //                           if (cartSaveErr) {
+  //                             return done(cartSaveErr);
+  //                           }
+  //                           // Get Carts list
+  //                           var carts = cartSaveRes.body;
+  //                           // Set assertions
+  //                           (carts.user._id).should.equal(userId);
+  //                           (carts.products.length).should.match(1);
+  //                           (carts.products[0].qty).should.match(2);
+  //                           (carts.amount).should.match(200);
+  //                           // Call the assertion callback
+  //                           done();
+  //                         });
+  //                     });
+  //                 });
+  //             });
+  //         });
+  //     });
+  // });
+
+  // it('MDW : get cart by user login', function (done) {
+  //   agent.post('/api/auth/signin')
+  //     .send(credentials2)
+  //     .expect(200)
+  //     .end(function (signinErr, signinRes) {
+  //       // Handle signin error
+  //       if (signinErr) {
+  //         return done(signinErr);
+  //       }
+  //       // Get the userId
+  //       var userId = user2.id;
+  //       // Save a new Cart
+  //       agent.post('/api/manage-carts/add')
+  //         .send(product)
+  //         .expect(200)
+  //         .end(function (cartSaveErr, cartSaveRes) {
+  //           // Handle Cart save error
+  //           if (cartSaveErr) {
+  //             return done(cartSaveErr);
+  //           }
+
+  //           agent.get('/api/manage-carts/get-by-user/' + userId)
+  //             .end(function (cartSaveErr, cartSaveRes) {
+  //               // Handle Cart save error
+  //               if (cartSaveErr) {
+  //                 return done(cartSaveErr);
+  //               }
+  //               // Get Carts list
+  //               var carts = cartSaveRes.body;
+  //               // Set assertions
+  //               (carts.user._id).should.equal(userId);
+  //               (carts.products.length).should.match(1);
+  //               // Call the assertion callback
+  //               done();
+  //             });
+  //         });
+  //     });
+  // });
 
   afterEach(function (done) {
     User.remove().exec(function () {

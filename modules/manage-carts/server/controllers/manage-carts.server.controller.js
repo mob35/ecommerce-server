@@ -16,15 +16,16 @@ var path = require('path'),
 exports.manageCartByID = function (req, res, next, id) {
   req.id = id;
   next();
-}
+};
 
 exports.findUserCart = function (req, res, next) {
   // req.user._id 
-  let user_id;
+  var user_id;
   if (req.id) {
-    user_id = req.id
+    user_id = req.id;
   } else {
-    user_id = req.body.user._id
+    console.log(req.body);
+    user_id = req.body.selecteduser._id;
   }
   Cart.find({
       user: user_id
@@ -34,7 +35,11 @@ exports.findUserCart = function (req, res, next) {
       path: 'products',
       populate: {
         path: 'product',
-        model: 'Product'
+        model: 'Product',
+        populate: {
+          path: 'shopseller',
+          model: 'Shop'
+        }
       }
     }).exec(function (err, cart) {
       if (err) {
@@ -138,7 +143,7 @@ exports.saveUserCart = function (req, res, next) {
     next();
   } else {
     var cart = new Cart(req.userCart);
-    cart.user = req.body.user;
+    cart.user = req.body.selecteduser;
     cart.save(function (err) {
       if (err) {
         return res.status(400).send({
