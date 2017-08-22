@@ -13,9 +13,21 @@ var path = require('path'),
 
 // Custom cart
 
+exports.manageCartByID = function (req, res, next, id) {
+  req.id = id;
+  next();
+}
+
 exports.findUserCart = function (req, res, next) {
+  // req.user._id 
+  let user_id;
+  if (req.id) {
+    user_id = req.id
+  } else {
+    user_id = req.body.user._id
+  }
   Cart.find({
-      user: req.user._id
+      user: user_id
     })
     .populate('user', 'displayName')
     .populate({
@@ -126,7 +138,7 @@ exports.saveUserCart = function (req, res, next) {
     next();
   } else {
     var cart = new Cart(req.userCart);
-    cart.user = req.user;
+    cart.user = req.body.user;
     cart.save(function (err) {
       if (err) {
         return res.status(400).send({
@@ -155,4 +167,41 @@ exports.updateUserCart = function (req, res) {
 
 exports.sendCart = function (req, res) {
   res.jsonp(req.cart[0]);
+};
+
+exports.cartByID = function (req, res, next) {
+  var id = req.id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send({
+      message: 'Cart is invalid'
+    });
+  }
+
+  Cart.findById(id).populate('user', 'displayName').exec(function (err, cart) {
+    if (err) {
+      return next(err);
+    } else if (!cart) {
+      return res.status(404).send({
+        message: 'No Cart with that identifier has been found'
+      });
+    }
+    req.cart = cart;
+    next();
+  });
+};
+
+exports.update = function (req, res) {
+  var cart = req.cart;
+
+  cart = _.extend(cart, req.body);
+
+  cart.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(cart);
+    }
+  });
 };
