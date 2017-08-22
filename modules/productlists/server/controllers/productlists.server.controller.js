@@ -20,7 +20,6 @@ exports.read = function(req, res, next) {
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
-            // console.log(productlists);
             req.listprod = productlists;
             next();
         }

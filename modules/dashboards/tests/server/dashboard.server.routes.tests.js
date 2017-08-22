@@ -6,6 +6,9 @@ var should = require('should'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
   Dashboard = mongoose.model('Dashboard'),
+  Product = mongoose.model('Product'),
+  Shipping = mongoose.model('Shipping'),
+  Shop = mongoose.model('Shop'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -15,6 +18,9 @@ var app,
   agent,
   credentials,
   user,
+  product,
+  shop,
+  shipping,
   dashboard;
 
 /**
@@ -53,13 +59,54 @@ describe('Dashboard CRUD tests', function () {
       banner_title: "Fashion"
     });
 
+    shop = new Shop({
+      name: 'shop1',
+      detail: 'detail shop1',
+      email: 'shop1@gmail.com',
+      tel: '099-9999999',
+      img: [{
+        url: 'shop1.jpg'
+      }],
+      user: user
+    });
+
+    shipping = new Shipping({
+      name: 'shoping1',
+      user: user
+    });
+
+    product = new Product({
+      name: 'product1',
+      unitprice: 100,
+      img: [{
+        id: '1',
+        url: 'img1.jpg'
+      }],
+      preparedays: 1,
+      historylog: [{
+        customerid: user,
+        hisdate: new Date()
+      }],
+      shopseller: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      user: user
+    });
+
     // Save a user to the test db and create new Dashboard
     user.save(function () {
       dashboard.save(function () {
-        done();
+        shop.save(function () {
+          shipping.save(function () {
+            product.save(function (err, result) {
+              done();
+            });
+          });
+        });
       });
     });
-    
+
   });
 
   it('should return title and banner', function (done) {
@@ -92,7 +139,7 @@ describe('Dashboard CRUD tests', function () {
   it('should return popularproducts', function (done) {
     agent.get('/api/dashboards')
       .end(function (req, res) {
-        (res.body.popularproducts.length).should.equal(0);
+        (res.body.popularproducts.length).should.equal(1);
         done();
       });
   });
@@ -100,7 +147,7 @@ describe('Dashboard CRUD tests', function () {
   it('should return popularshops', function (done) {
     agent.get('/api/dashboards')
       .end(function (req, res) {
-        (res.body.popularshops.length).should.equal(0);
+        (res.body.popularshops.length).should.equal(1);
         done();
       });
   });
@@ -108,7 +155,13 @@ describe('Dashboard CRUD tests', function () {
   afterEach(function (done) {
     User.remove().exec(function () {
       Dashboard.remove().exec(function () {
-        done();
+        Shop.remove().exec(function () {
+          Shipping.remove().exec(function () {
+            Product.remove().exec(function () {
+              done();
+            });
+          });
+        });
       });
     });
   });
