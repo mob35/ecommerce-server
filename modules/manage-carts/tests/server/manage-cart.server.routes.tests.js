@@ -8,7 +8,7 @@ var should = require('should'),
   Cart = mongoose.model('Cart'),
   Product = mongoose.model('Product'),
   Shop = mongoose.model('Shop'),
-  Shipping = mongoose.model('Shipping'),  
+  Shipping = mongoose.model('Shipping'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -17,13 +17,16 @@ var should = require('should'),
 var app,
   agent,
   credentials,
+  credentials2,
   user,
+  user2,
   cart,
+  cart2,
   shop,
   product,
   product2,
   shipping;
-  
+
 
 /**
  * Manage cart routes tests
@@ -45,6 +48,11 @@ describe('Manage cart CRUD tests', function () {
       password: 'M3@n.jsI$Aw3$0m3'
     };
 
+    credentials2 = {
+      username: 'username2',
+      password: 'M3@n.jsI$Aw3$0m3'
+    };
+
     // Create a new user
     user = new User({
       firstName: 'Full',
@@ -55,6 +63,17 @@ describe('Manage cart CRUD tests', function () {
       password: credentials.password,
       provider: 'local'
     });
+
+    user2 = new User({
+      firstName: 'Full2',
+      lastName: 'Name2',
+      displayName: 'Full Name2',
+      email: 'test2@test.com',
+      username: credentials2.username,
+      password: credentials2.password,
+      provider: 'local'
+    });
+
 
     shop = new Shop({
       name: 'Shop name',
@@ -124,21 +143,35 @@ describe('Manage cart CRUD tests', function () {
       shopseller: shop
     });
 
+    cart2 = new Cart({
+      products: [{
+        product: product,
+        itemamount: 100,
+        qty: 1
+      }],
+      amount: 100,
+      user: user2
+    });
+
     // Save a user to the test db and create new Cart
     user.save(function () {
-      shop.save(function () {
-        product.save(function () {
-          product2.save(function () {
-            cart = {
-              products: [{
-                product: product,
-                itemamount: 100,
-                qty: 1
-              }],
-              amount: 100,
-              user: user
-            };
-            done();
+      user2.save(function () {
+        shop.save(function () {
+          product.save(function () {
+            product2.save(function () {
+              cart2.save(function () {
+                cart = {
+                  products: [{
+                    product: product,
+                    itemamount: 100,
+                    qty: 1
+                  }],
+                  amount: 100,
+                  user: user
+                };
+                done();
+              });
+            });
           });
         });
       });
@@ -433,7 +466,7 @@ describe('Manage cart CRUD tests', function () {
 
   it('MDW : get cart by user login', function (done) {
     agent.post('/api/auth/signin')
-      .send(credentials)
+      .send(credentials2)
       .expect(200)
       .end(function (signinErr, signinRes) {
         // Handle signin error
@@ -441,7 +474,7 @@ describe('Manage cart CRUD tests', function () {
           return done(signinErr);
         }
         // Get the userId
-        var userId = user.id;
+        var userId = user2.id;
         // Save a new Cart
         agent.post('/api/manage-carts/add')
           .send(product)

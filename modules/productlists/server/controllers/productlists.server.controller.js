@@ -26,7 +26,5 @@ exports.read = function(req, res, next) {
     });
 };
 exports.listproduct = function(req, res) {
-    res.jsonp(
-        req.listprod
-    );
+    res.jsonp(req.listprod);
 };

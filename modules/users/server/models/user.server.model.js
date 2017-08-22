@@ -63,6 +63,11 @@ var UserSchema = new Schema({
     type: String,
     default: ''
   },
+
+  tel: {
+    type: String,
+  },
+  
   salt: {
     type: String
   },
