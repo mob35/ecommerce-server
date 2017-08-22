@@ -139,6 +139,7 @@ describe('get product detail', function () {
           (products.favorite[0].favdate).should.match(productObj.favorite[0].favdate);
           (products.historylog[0].customerid).should.match(user.id);
           (products.historylog[0].hisdate).should.match(productObj.historylog[0].hisdate);
+          (products.view).should.match(0);
           (products.qty).should.match(productObj.qty);
           (products.shop).should.match(shop.id);
           (products.shippings[0].shipping).should.match(shipping.id);
