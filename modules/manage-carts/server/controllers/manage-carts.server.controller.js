@@ -24,8 +24,9 @@ exports.findUserCart = function (req, res, next) {
   if (req.id) {
     user_id = req.id;
   } else {
-    console.log(req.body);
-    user_id = req.body.selecteduser._id;
+    // console.log(req.body);
+    user_id = req.user ? req.user._id : req.body.selecteduser._id;
+    req.user = req.user ? req.user : req.body.selecteduser;
   }
   Cart.find({
       user: user_id
@@ -143,7 +144,7 @@ exports.saveUserCart = function (req, res, next) {
     next();
   } else {
     var cart = new Cart(req.userCart);
-    cart.user = req.body.selecteduser;
+    cart.user = req.user;
     cart.save(function (err) {
       if (err) {
         return res.status(400).send({
