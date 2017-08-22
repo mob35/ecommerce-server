@@ -100,9 +100,6 @@ describe('Dashboard CRUD tests', function () {
         shop.save(function () {
           shipping.save(function () {
             product.save(function (err, result) {
-              console.log('=================DATA===========');
-              console.log(result);
-              console.log('================================');
               done();
             });
           });
