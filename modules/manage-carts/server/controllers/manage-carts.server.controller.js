@@ -127,7 +127,7 @@ exports.saveUserCart = function (req, res, next) {
     next();
   } else {
     var cart = new Cart(req.userCart);
-    cart.user = req.user;
+    cart.user = req.body.user;
     cart.save(function (err) {
       if (err) {
         return res.status(400).send({
