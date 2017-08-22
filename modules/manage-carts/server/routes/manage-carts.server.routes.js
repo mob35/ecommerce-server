@@ -17,9 +17,9 @@ module.exports = function (app) {
   app.route('/api/manage-carts/delete')
     .post(manageCarts.findUserCart, manageCarts.processingDeleteUserCart, manageCarts.updateUserCart);
 
-  app.route('/api/manage-carts/get-by-user')
+  app.route('/api/manage-carts/get-by-user/:manageCartId')
     .get(manageCarts.findUserCart, manageCarts.sendCart);
   // .all(manageCartsPolicy.isAllowed)
   // Finish by binding the Manage cart middleware
-  // app.param('manageCartId', manageCarts.manageCartByID);
+  app.param('manageCartId', manageCarts.manageCartByID);
 };

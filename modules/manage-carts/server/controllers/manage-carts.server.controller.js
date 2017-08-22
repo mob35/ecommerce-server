@@ -13,10 +13,21 @@ var path = require('path'),
 
 // Custom cart
 
+exports.manageCartByID = function (req, res, next, id) {
+  req.user_id = id;
+  next();
+}
+
 exports.findUserCart = function (req, res, next) {
   // req.user._id 
+  let user_id;
+  if (req.user_id) {
+    user_id = req.user_id
+  } else {
+    user_id = req.body.user._id
+  }
   Cart.find({
-      user: req.body.user._id 
+      user: user_id
     })
     .populate('user', 'displayName')
     .populate({
