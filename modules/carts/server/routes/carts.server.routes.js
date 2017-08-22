@@ -6,7 +6,7 @@
 var cartsPolicy = require('../policies/carts.server.policy'),
   carts = require('../controllers/carts.server.controller');
 
-module.exports = function(app) {
+module.exports = function (app) {
   // Carts Routes
   app.route('/api/carts').all(cartsPolicy.isAllowed)
     .get(carts.list)

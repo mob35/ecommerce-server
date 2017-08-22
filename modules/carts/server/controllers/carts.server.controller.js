@@ -12,11 +12,11 @@ var path = require('path'),
 /**
  * Create a Cart
  */
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   var cart = new Cart(req.body);
   cart.user = req.user;
 
-  cart.save(function(err) {
+  cart.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -30,7 +30,7 @@ exports.create = function(req, res) {
 /**
  * Show the current Cart
  */
-exports.read = function(req, res) {
+exports.read = function (req, res) {
   // convert mongoose document to JSON
   var cart = req.cart ? req.cart.toJSON() : {};
 
@@ -44,12 +44,12 @@ exports.read = function(req, res) {
 /**
  * Update a Cart
  */
-exports.update = function(req, res) {
+exports.update = function (req, res) {
   var cart = req.cart;
 
   cart = _.extend(cart, req.body);
 
-  cart.save(function(err) {
+  cart.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -63,10 +63,10 @@ exports.update = function(req, res) {
 /**
  * Delete an Cart
  */
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
   var cart = req.cart;
 
-  cart.remove(function(err) {
+  cart.remove(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -80,8 +80,8 @@ exports.delete = function(req, res) {
 /**
  * List of Carts
  */
-exports.list = function(req, res) {
-  Cart.find().sort('-created').populate('user', 'displayName').exec(function(err, carts) {
+exports.list = function (req, res) {
+  Cart.find().sort('-created').populate('user', 'displayName').exec(function (err, carts) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -95,7 +95,7 @@ exports.list = function(req, res) {
 /**
  * Cart middleware
  */
-exports.cartByID = function(req, res, next, id) {
+exports.cartByID = function (req, res, next, id) {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send({
