@@ -20,14 +20,12 @@ exports.read = function(req, res, next) {
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
-            // console.log(productlists);
             req.listprod = productlists;
             next();
         }
     });
 };
 exports.listproduct = function(req, res) {
-    console.log(req.listprod);
     res.jsonp(
         req.listprod
     );

@@ -59,6 +59,10 @@ var ProductSchema = new Schema({
       }
     }]
   },
+  view: {
+    type: Number,
+    default: 0
+  },
   shopseller: {
     required: 'Please fill Product shopseller',
     type: Schema.ObjectId,

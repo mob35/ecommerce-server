@@ -38,17 +38,18 @@ exports.productdetailByID = function (req, res, next, id) {
 
 exports.read = function (req, res) {
   res.jsonp({
-    "_id": req.product._id,
-    "name": req.product.name,
-    "detail": req.product.detail,
-    "unitprice": req.product.unitprice,
-    "img": req.product.img,
-    "favorite": req.product.favorite,
-    "historylog": req.product.historylog,
-    "preparedays": req.product.preparedays,
-    "qty": req.product.qty,
-    "shippings": req.product.shippings,
-    "shop": req.product.shopseller
+    _id: req.product._id,
+    name: req.product.name,
+    detail: req.product.detail,
+    unitprice: req.product.unitprice,
+    img: req.product.img,
+    favorite: req.product.favorite,
+    historylog: req.product.historylog,
+    view: req.product.view,
+    preparedays: req.product.preparedays,
+    qty: req.product.qty,
+    shippings: req.product.shippings,
+    shop: req.product.shopseller
   });
 };
 
