@@ -118,10 +118,10 @@ describe('Productlist CRUD tests', function () {
             .end(function (productlistSaveErr, productlistSaveRes) {
                 // Call the assertion callback
                 var productlists = productlistSaveRes.body;
-                (productlists[0].name).should.equal('Product name');
-                (productlists[0].detail).should.equal('Product detail');
-                (productlists[0].unitprice).should.equal(100);
-                (productlists[0].img[0].url).should.equal('img url');
+                (productlists.product[0].name).should.equal('Product name');
+                (productlists.product[0].detail).should.equal('Product detail');
+                (productlists.product[0].unitprice).should.equal(100);
+                (productlists.product[0].img[0].url).should.equal('img url');
 
                 done();
             });

@@ -79,7 +79,7 @@ describe('Shoplist CRUD tests', function () {
       .end(function (signinErr, signinRes) {
 
         var shoplists = signinRes.body;
-        (shoplists[0].name).should.equal('Shop Name');
+        (shoplists.shop[0].name).should.equal('Shop Name');
         done();
 
       });
