@@ -67,42 +67,6 @@ describe('Shop Model Unit Tests:', function () {
         done();
       });
     });
-
-    it('should be able to show an error when try to save without detail', function (done) {
-      shop.detail = '';
-
-      return shop.save(function (err) {
-        should.exist(err);
-        done();
-      });
-    });
-
-    it('should be able to show an error when try to save without email', function (done) {
-      shop.email = '';
-
-      return shop.save(function (err) {
-        should.exist(err);
-        done();
-      });
-    });
-
-    it('should be able to show an error when try to save without tel', function (done) {
-      shop.tel = '';
-
-      return shop.save(function (err) {
-        should.exist(err);
-        done();
-      });
-    });
-
-    it('should be able to show an error when try to save without img', function (done) {
-      shop.img = null;
-
-      return shop.save(function (err) {
-        should.exist(err);
-        done();
-      });
-    });
   });
 
   afterEach(function (done) {
