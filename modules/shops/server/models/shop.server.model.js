@@ -18,19 +18,15 @@ var ShopSchema = new Schema({
   },
   detail: {
     type: String,
-    required: 'Please fill Shop detail',
     trim: true
   },
   email: {
-    type: String,
-    required: 'Please fill Shop email'
+    type: String
   },
   tel: {
-    type: String,
-    required: 'Please fill Shop tel'
+    type: String
   },
   img: {
-    required: 'Please fill Shop img',
     type: [
       {
         url: String
