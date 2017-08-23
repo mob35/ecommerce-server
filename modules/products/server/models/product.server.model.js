@@ -80,6 +80,18 @@ var ProductSchema = new Schema({
       shippingenddate: Date
     }]
   },
+  issize: {
+    type: Boolean
+  },
+  size: {
+    detail: String,
+    sizedetail: [
+      {
+        name: String,
+        qty: Number
+      }
+    ]
+  },
   created: {
     type: Date,
     default: Date.now
