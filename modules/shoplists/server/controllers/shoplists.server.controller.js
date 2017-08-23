@@ -13,14 +13,14 @@ var path = require('path'),
 /**
  * List of Shoplists
  */
-exports.read = function(req, res) {
-    Shop.find().sort('-created').exec(function(err, shoplists) {
+exports.read = function (req, res) {
+    Shop.find().sort('-created').exec(function (err, shoplists) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
-            res.jsonp(shoplists);
+            res.jsonp({ shop: shoplists, title: 'Shop list' });
         }
     });
 };

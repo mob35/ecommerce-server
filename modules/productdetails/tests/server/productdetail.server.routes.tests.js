@@ -95,7 +95,17 @@ describe('get product detail', function () {
         shippingstartdate: new Date('2017-08-21'),
         shippingenddate: new Date('2017-08-21')
       }],
-      shopseller: shop
+      shopseller: shop,
+      issize: true,
+      size: {
+        detail: 'size detail',
+        sizedetail: [
+          {
+            name: 'sizedetail name',
+            qty: 5
+          }
+        ]
+      }
     });
     user.save(function () {
       shipping.save(function () {
@@ -146,6 +156,10 @@ describe('get product detail', function () {
           (products.shippings[0].shippingprice).should.match(productObj.shippings[0].shippingprice);
           (products.shippings[0].shippingstartdate).should.match(productObj.shippings[0].shippingstartdate);
           (products.shippings[0].shippingenddate).should.match(productObj.shippings[0].shippingenddate);
+          (products.issize).should.match(true);
+          (products.size.detail).should.match('size detail');
+          (products.size.sizedetail[0].name).should.match('sizedetail name');
+          (products.size.sizedetail[0].qty).should.match(5);
           done();
         });
     });

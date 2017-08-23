@@ -5,11 +5,11 @@
     .module('products')
     .run(menuConfig);
 
-  menuConfig.$inject = ['menuService'];
+  menuConfig.$inject = ['Menus'];
 
-  function menuConfig(menuService) {
+  function menuConfig(Menus) {
     // Set top bar menu items
-    menuService.addMenuItem('topbar', {
+    Menus.addMenuItem('topbar', {
       title: 'Products',
       state: 'products',
       type: 'dropdown',
@@ -17,13 +17,13 @@
     });
 
     // Add the dropdown list item
-    menuService.addSubMenuItem('topbar', 'products', {
+    Menus.addSubMenuItem('topbar', 'products', {
       title: 'List Products',
       state: 'products.list'
     });
 
     // Add the dropdown create item
-    menuService.addSubMenuItem('topbar', 'products', {
+    Menus.addSubMenuItem('topbar', 'products', {
       title: 'Create Product',
       state: 'products.create',
       roles: ['user']

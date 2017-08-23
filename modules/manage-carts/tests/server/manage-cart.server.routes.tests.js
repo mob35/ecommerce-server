@@ -485,7 +485,7 @@ describe('Manage cart CRUD tests', function () {
               return done(cartSaveErr);
             }
 
-            agent.get('/api/manage-carts/get-by-user')
+            agent.get('/api/manage-carts/get-by-user/' + userId)
               .end(function (cartSaveErr, cartSaveRes) {
                 // Handle Cart save error
                 if (cartSaveErr) {

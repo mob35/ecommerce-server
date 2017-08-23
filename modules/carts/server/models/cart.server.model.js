@@ -23,7 +23,6 @@ var CartSchema = new Schema({
         type: Number
       }
     }],
-    required: 'Please fill Cart items'
   },
   amount: {
     type: Number,

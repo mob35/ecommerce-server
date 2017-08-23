@@ -24,6 +24,7 @@ exports.productdetailByID = function (req, res, next, id) {
   //   next();
   // });
   Product.findById(id).exec(function (err, product) {
+    // console.log(product);
     if (err) {
       return next(err);
     } else if (!product) {
@@ -49,7 +50,9 @@ exports.read = function (req, res) {
     preparedays: req.product.preparedays,
     qty: req.product.qty,
     shippings: req.product.shippings,
-    shop: req.product.shopseller
+    shop: req.product.shopseller,
+    issize: req.product.issize,
+    size: req.product.size
   });
 };
 
