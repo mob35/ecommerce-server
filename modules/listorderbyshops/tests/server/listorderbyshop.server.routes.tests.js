@@ -183,7 +183,7 @@ describe('Listorderbyshop CRUD tests', function () {
             }
             var shopid = shop.id;
             // Get a list of Orders
-            agent.get('/api/listorderbyshops/' + shopid)
+            agent.get('/api/listorderbyshops/confirm/' + shopid)
               .end(function (ordersGetErr, ordersGetRes) {
                 // Handle Orders save error
                 if (ordersGetErr) {
@@ -225,7 +225,7 @@ describe('Listorderbyshop CRUD tests', function () {
             }
             var shopid = 1234;
             // Get a list of Orders
-            agent.get('/api/listorderbyshops/' + shopid)
+            agent.get('/api/listorderbyshops/all/' + shopid)
               .end(function (ordersGetErr, ordersGetRes) {
                 // Handle Orders save error
                 if (ordersGetErr) {

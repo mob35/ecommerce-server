@@ -18,7 +18,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/listorderbyshops',
       permissions: '*'
     }, {
-      resources: '/api/listorderbyshops/:listorderbyshopId',
+      resources: '/api/listorderbyshops/:orderstatus/:listorderbyshopId',
       permissions: '*'
     }]
   }, {
@@ -27,7 +27,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/listorderbyshops',
       permissions: ['get', 'post']
     }, {
-      resources: '/api/listorderbyshops/:listorderbyshopId',
+      resources: '/api/listorderbyshops/:orderstatus/:listorderbyshopId',
       permissions: ['get']
     }]
   }, {
@@ -36,7 +36,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/listorderbyshops',
       permissions: ['get']
     }, {
-      resources: '/api/listorderbyshops/:listorderbyshopId',
+      resources: '/api/listorderbyshops/:orderstatus/:listorderbyshopId',
       permissions: ['get']
     }]
   }]);
