@@ -67,7 +67,7 @@ var UserSchema = new Schema({
   tel: {
     type: String,
   },
-  
+
   salt: {
     type: String
   },
@@ -84,7 +84,7 @@ var UserSchema = new Schema({
   roles: {
     type: [{
       type: String,
-      enum: ['user', 'admin']
+      enum: ['user', 'admin', 'seller']
     }],
     default: ['user'],
     required: 'Please provide at least one role'
