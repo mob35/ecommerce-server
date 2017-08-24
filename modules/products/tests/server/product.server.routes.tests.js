@@ -55,7 +55,8 @@ describe('Product CRUD tests', function () {
     shipping = new Shipping({
       name: 'shipping name',
       detail: 'shipping detail',
-      days: 10
+      days: 10,
+      price: 50
     });
 
     shop = new Shop({
@@ -96,7 +97,7 @@ describe('Product CRUD tests', function () {
             }],
             shippings: [{
               shipping: shipping,
-              shippingprice: 10,
+              // shippingprice: 10,
               shippingstartdate: new Date('2017-08-21'),
               shippingenddate: new Date('2017-08-21')
             }],
@@ -155,6 +156,12 @@ describe('Product CRUD tests', function () {
                 (products[0].favorite[0].favdate).should.match(product.favorite[0].favdate);
                 (products[0].historylog[0].customerid).should.match(userId);
                 (products[0].historylog[0].hisdate).should.match(product.historylog[0].hisdate);
+                (products[0].shippings[0].shipping.name).should.match('shipping name');
+                (products[0].shippings[0].shipping.detail).should.match('shipping detail');
+                (products[0].shippings[0].shipping.days).should.match(10);
+                (products[0].shippings[0].shipping.price).should.match(50);
+                (products[0].shippings[0].shippingstartdate).should.match(new Date('2017-08-21'));
+                (products[0].shippings[0].shippingenddate).should.match(new Date('2017-08-21'));
 
                 // Call the assertion callback
                 done();
