@@ -30,9 +30,9 @@ describe('Categorymaster Model Unit Tests:', function () {
 
     user.save(function () {
       categorymaster = new Categorymaster({
-        name: 'New Category',
+        name: 'NewCategory',
         detail: 'Category Detail',
-        perent: 'Parent cate name',
+        parent: 'Parent cate name',
         user: user
       });
 

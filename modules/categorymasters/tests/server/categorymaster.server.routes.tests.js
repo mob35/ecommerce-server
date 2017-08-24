@@ -50,9 +50,12 @@ describe('Categorymaster CRUD tests', function () {
 
     // Save a user to the test db and create new Categorymaster
     user.save(function () {
-      categorymaster = {
-        name: 'Categorymaster name'
-      };
+      categorymaster = new Categorymaster({
+        name: 'NewCategory',
+        detail: 'Category Detail',
+        parent: 'Parent cate name',
+        user: user
+      });
 
       done();
     });
@@ -94,7 +97,7 @@ describe('Categorymaster CRUD tests', function () {
 
                 // Set assertions
                 (categorymasters[0].user._id).should.equal(userId);
-                (categorymasters[0].name).should.match('Categorymaster name');
+                (categorymasters[0].name).should.match('NewCategory');
 
                 // Call the assertion callback
                 done();
@@ -135,7 +138,7 @@ describe('Categorymaster CRUD tests', function () {
           .expect(400)
           .end(function (categorymasterSaveErr, categorymasterSaveRes) {
             // Set message assertion
-            (categorymasterSaveRes.body.message).should.match('Please fill Categorymaster name');
+            (categorymasterSaveRes.body.message).should.match('Please fill category name');
 
             // Handle Categorymaster save error
             done(categorymasterSaveErr);
