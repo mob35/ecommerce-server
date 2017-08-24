@@ -7,9 +7,9 @@
 
   menuConfig.$inject = ['Menus'];
 
-  function menuConfig(menuService) {
+  function menuConfig(Menus) {
     // Set top bar menu items
-    menuService.addMenuItem('topbar', {
+    Menus.addMenuItem('topbar', {
       title: 'Carts',
       state: 'carts',
       type: 'dropdown',
@@ -17,13 +17,13 @@
     });
 
     // Add the dropdown list item
-    menuService.addSubMenuItem('topbar', 'carts', {
+    Menus.addSubMenuItem('topbar', 'carts', {
       title: 'List Carts',
       state: 'carts.list'
     });
 
     // Add the dropdown create item
-    menuService.addSubMenuItem('topbar', 'carts', {
+    Menus.addSubMenuItem('topbar', 'carts', {
       title: 'Create Cart',
       state: 'carts.create',
       roles: ['user']
