@@ -10,7 +10,7 @@ module.exports = function (app) {
   // Manage user shops Routes
   app.route('/api/manage-user-shops').all(manageUserShopsPolicy.isAllowed)
     // .get(manageUserShops.list)
-    .post(manageUserShops.createUser, manageUserShops.createShop);
+    .post(manageUserShops.createUser, manageUserShops.createShop, manageUserShops.createAddress, manageUserShops.updateAddressToShop);
 
   // app.route('/api/manage-user-shops/:manageUserShopId').all(manageUserShopsPolicy.isAllowed)
   //   .get(manageUserShops.read)

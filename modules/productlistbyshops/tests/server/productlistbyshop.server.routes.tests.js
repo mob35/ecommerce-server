@@ -8,6 +8,7 @@ var should = require('should'),
     Product = mongoose.model('Product'),
     Shop = mongoose.model('Shop'),
     Shipping = mongoose.model('Shipping'),
+    Sizemaster = mongoose.model('Sizemaster'),
     express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -20,14 +21,15 @@ var app,
     shop2,
     shipping,
     product,
+    sizemaster,
     user;
 
 /**
  * Productlistbyshop routes tests
  */
-describe('Productlistbyshop CRUD tests', function() {
+describe('Productlistbyshop CRUD tests', function () {
 
-    before(function(done) {
+    before(function (done) {
         // Get application
         app = express.init(mongoose);
         agent = request.agent(app);
@@ -35,7 +37,7 @@ describe('Productlistbyshop CRUD tests', function() {
         done();
     });
 
-    beforeEach(function(done) {
+    beforeEach(function (done) {
         // Create user credentials
         credentials = {
             username: 'username',
@@ -87,6 +89,15 @@ describe('Productlistbyshop CRUD tests', function() {
             days: 10
         });
 
+        sizemaster = new Sizemaster({
+            detail: 'US',
+            sizedetail: [{
+                name: '38'
+            }, {
+                name: '39'
+            }]
+        });
+
         product = new Product({
             name: 'Product name',
             detail: 'Product detail',
@@ -113,76 +124,66 @@ describe('Productlistbyshop CRUD tests', function() {
             }],
             shopseller: shop,
             issize: true,
-            size: {
-                detail: 'size detail',
-                sizedetail: [{
-                    name: 'sizedetail name',
-                    qty: 5
-                }]
-            }
+            size: sizemaster
         });
 
         // Save a user to the test db and create new Productlistbyshop
-        user.save(function() {
-            shop.save(function() {
-                shop2.save(function() {
-                    shipping.save(function() {
-                        product = {
-                            name: 'Product name',
-                            detail: 'Product detail',
-                            unitprice: 100,
-                            qty: 10,
-                            img: [{
-                                url: 'imgurl',
-                                id: 'imgid'
-                            }],
-                            preparedays: 10,
-                            favorite: [{
-                                customerid: user,
-                                favdate: new Date('2017-08-21')
-                            }],
-                            historylog: [{
-                                customerid: user,
-                                hisdate: new Date('2017-08-21')
-                            }],
-                            shippings: [{
-                                shipping: shipping,
-                                shippingprice: 10,
-                                shippingstartdate: new Date('2017-08-21'),
-                                shippingenddate: new Date('2017-08-21')
-                            }],
-                            shopseller: shop,
-                            issize: true,
-                            size: {
-                                detail: 'size detail',
-                                sizedetail: [{
-                                    name: 'sizedetail name',
-                                    qty: 5
-                                }]
-                            }
-                        };
-                        // product.save(function() {
-                        done();
-                        // });
+        user.save(function () {
+            shop.save(function () {
+                shop2.save(function () {
+                    sizemaster.save(function () {
+                        shipping.save(function () {
+                            product = {
+                                name: 'Product name',
+                                detail: 'Product detail',
+                                unitprice: 100,
+                                qty: 10,
+                                img: [{
+                                    url: 'imgurl',
+                                    id: 'imgid'
+                                }],
+                                preparedays: 10,
+                                favorite: [{
+                                    customerid: user,
+                                    favdate: new Date('2017-08-21')
+                                }],
+                                historylog: [{
+                                    customerid: user,
+                                    hisdate: new Date('2017-08-21')
+                                }],
+                                shippings: [{
+                                    shipping: shipping,
+                                    shippingprice: 10,
+                                    shippingstartdate: new Date('2017-08-21'),
+                                    shippingenddate: new Date('2017-08-21')
+                                }],
+                                shopseller: shop,
+                                issize: true,
+                                size: sizemaster
+                            };
+                            // product.save(function() {
+                            done();
+                            // });
+                        });
                     });
                 });
             });
         });
     });
 
-    it('get shop by id not id', function(done) {
+    it('get shop by id not id', function (done) {
 
         // Get a list of Products
         agent.get('/api/productlistbyshop/ ')
             .expect(404)
-            .end(function(productlistSaveErr, productlistSaveRes) {
+            .end(function (productlistSaveErr, productlistSaveRes) {
                 // Call the assertion callback
                 done(productlistSaveErr);
             });
         // done();
     });
 
-    it('get shop by id', function(done) {
+    it('get shop by id', function (done) {
 
         // Create new Product model instance
         var productObj = new Product({
@@ -211,13 +212,7 @@ describe('Productlistbyshop CRUD tests', function() {
             }],
             shopseller: shop,
             issize: true,
-            size: {
-                detail: 'size detail',
-                sizedetail: [{
-                    name: 'sizedetail name',
-                    qty: 5
-                }]
-            }
+            size: sizemaster
         });
         var productObj2 = new Product({
             name: 'Product name',
@@ -245,13 +240,7 @@ describe('Productlistbyshop CRUD tests', function() {
             }],
             shopseller: shop,
             issize: true,
-            size: {
-                detail: 'size detail',
-                sizedetail: [{
-                    name: 'sizedetail name',
-                    qty: 5
-                }]
-            }
+            size: sizemaster
         });
         var productObj3 = new Product({
             name: 'Product name',
@@ -279,22 +268,16 @@ describe('Productlistbyshop CRUD tests', function() {
             }],
             shopseller: shop2,
             issize: true,
-            size: {
-                detail: 'size detail',
-                sizedetail: [{
-                    name: 'sizedetail name',
-                    qty: 5
-                }]
-            }
+            size: sizemaster
         });
 
 
         // Save the Product
-        productObj.save(function() {
-            productObj2.save(function() {
-                productObj3.save(function(err, result) {
+        productObj.save(function () {
+            productObj2.save(function () {
+                productObj3.save(function (err, result) {
                     agent.get('/api/productlistbyshop/' + shop._id)
-                        .end(function(req, res) {
+                        .end(function (req, res) {
                             var shopid = res.body;
                             // console.log(shop._id);
                             (shopid.length).should.match(2);
@@ -312,11 +295,11 @@ describe('Productlistbyshop CRUD tests', function() {
 
 
 
-    afterEach(function(done) {
-        User.remove().exec(function() {
-            Shop.remove().exec(function() {
-                Shipping.remove().exec(function() {
-                    Product.remove().exec(function() {
+    afterEach(function (done) {
+        User.remove().exec(function () {
+            Shop.remove().exec(function () {
+                Shipping.remove().exec(function () {
+                    Product.remove().exec(function () {
                         done();
                     });
                 });
