@@ -237,7 +237,7 @@ describe('Paymentmaster CRUD tests', function () {
             request(app).get('/api/paymentmasters')
                 .end(function (req, res) {
                     // Set assertion
-                    res.body.should.be.instanceof(Array).and.have.lengthOf(1);
+                    res.body.should.be.instanceof(Array).and.have.lengthOf(4);
 
                     // Call the assertion callback
                     done();
