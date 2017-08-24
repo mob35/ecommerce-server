@@ -150,7 +150,7 @@ exports.getbestsellers = function (req, res, next) {
   var startDate = new Date().getFullYear() + '-' + new Date().getMonth() + '-1';
   var endDate = new Date();
   Order.find({ 'created': { '$gte': startDate, '$lte': endDate } }, 'items.product')
-  .skip(0).limit(4)
+  .skip(0).limit(10)
   .exec(function (err, result) {
     if (err) {
       return res.status(404).send({

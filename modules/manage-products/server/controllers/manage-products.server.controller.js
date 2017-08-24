@@ -41,9 +41,6 @@ exports.update = function (req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      // console.log('==================RESULT===========');
-      // console.log(req.body);
-      // console.log('===================================');
       res.jsonp({
         success: true,
         message: req.body
