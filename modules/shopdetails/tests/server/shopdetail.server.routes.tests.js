@@ -7,6 +7,7 @@ var should = require('should'),
   Shop = mongoose.model('Shop'),
   Shipping = mongoose.model('Shipping'),
   Product = mongoose.model('Product'),
+  Categorymaster = mongoose.model('Categorymaster'),
   User = mongoose.model('User'),
   express = require(path.resolve('./config/lib/express'));
 
@@ -20,6 +21,7 @@ var app,
   shop,
   product,
   shopdetail,
+  categorymaster,
   shipping;
 
 /**
@@ -75,6 +77,13 @@ describe('Shopdetail CRUD tests', function () {
       ],
     });
 
+    categorymaster = new Categorymaster({
+      name: 'categorymaster name',
+      detail: 'categorymaster detail',
+      parent: 'categorymaster parent',
+      user: user
+    });
+
     product = new Product({
       name: 'Product name',
       detail: 'Product detail',
@@ -99,16 +108,19 @@ describe('Shopdetail CRUD tests', function () {
       historylog: [{
         customerid: user,
         hisdate: new Date('2017-08-21')
-      }]
+      }],
+      category: categorymaster
     });
 
     // Save a user to the test db and create new Shopdetail
     user.save(function () {
-      shopdetail = {
-        name: 'Shopdetail name'
-      };
+      categorymaster.save(function () {
+        shopdetail = {
+          name: 'Shopdetail name'
+        };
 
-      done();
+        done();
+      });
     });
   });
 
@@ -149,7 +161,9 @@ describe('Shopdetail CRUD tests', function () {
     User.remove().exec(function () {
       Product.remove().exec(function () {
         Shop.remove().exec(function () {
-          done();
+          Categorymaster.remove().exec(function () {
+            done();
+          });
         });
       });
     });

@@ -141,6 +141,7 @@ exports.getpopularshops = function (req, res, next) {
         });
       } else {
         req.popularshops = result;
+        console.log(req.popularshops);
         next();
       }
     });

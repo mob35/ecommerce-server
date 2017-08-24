@@ -10,6 +10,7 @@ var should = require('should'),
   Order = mongoose.model('Order'),
   Shop = mongoose.model('Shop'),
   Shipping = mongoose.model('Shipping'),
+  Categorymaster = mongoose.model('Categorymaster'),
   Addressmaster = mongoose.model('Addressmaster'),
   express = require(path.resolve('./config/lib/express'));
 
@@ -25,6 +26,7 @@ var app,
   product,
   order,
   shipping,
+  categorymaster,
   address;
 
 /**
@@ -78,6 +80,13 @@ describe('Listorderbyshop CRUD tests', function () {
       days: 20
     });
 
+    categorymaster = new Categorymaster({
+      name: 'categorymaster name',
+      detail: 'categorymaster detail',
+      parent: 'categorymaster parent',
+      user: user
+    });
+
     address = new Addressmaster({
       firstname: 'Addressmaster Name',
       lastname: 'Addressmaster lastname',
@@ -113,7 +122,8 @@ describe('Listorderbyshop CRUD tests', function () {
         shippingstartdate: new Date('2017-08-21'),
         shippingenddate: new Date('2017-08-21')
       }],
-      shopseller: shop
+      shopseller: shop,
+      category: categorymaster
     });
 
     cart = new Cart({
@@ -130,31 +140,33 @@ describe('Listorderbyshop CRUD tests', function () {
       shop.save(function () {
         address.save(function () {
           shipping.save(function () {
-            product.save(function () {
-              cart.save(function () {
-                order = {
-                  shipping: address,
-                  items: [{
-                    product: product,
-                    amount: 100,
-                    qty: 1,
-                    delivery: {
-                      description: 'description',
-                      deliverytype: 'deliverytype'
-                    }
-                  }],
-                  payment: {
-                    paymenttype: 'Credit',
-                    creditno: '2345761890876543',
-                    creditname: 'Sirintra Wannakheaw',
-                    expdate: '02/2018',
-                    creditcvc: '222',
-                    counterservice: ''
-                  },
-                  cart: cart.id,
-                  discount: 100,
-                };
-                done();
+            categorymaster.save(function () {
+              product.save(function () {
+                cart.save(function () {
+                  order = {
+                    shipping: address,
+                    items: [{
+                      product: product,
+                      amount: 100,
+                      qty: 1,
+                      delivery: {
+                        description: 'description',
+                        deliverytype: 'deliverytype'
+                      }
+                    }],
+                    payment: {
+                      paymenttype: 'Credit',
+                      creditno: '2345761890876543',
+                      creditname: 'Sirintra Wannakheaw',
+                      expdate: '02/2018',
+                      creditcvc: '222',
+                      counterservice: ''
+                    },
+                    cart: cart.id,
+                    discount: 100,
+                  };
+                  done();
+                });
               });
             });
           });
@@ -259,11 +271,13 @@ describe('Listorderbyshop CRUD tests', function () {
       Shop.remove().exec(function () {
         Addressmaster.remove().exec(function () {
           Shipping.remove().exec(function () {
-            Product.remove().exec(function () {
-              Cart.remove().exec(function () {
-                // Order.remove().exec(function() {
-                Order.remove().exec(done);
-                // });
+            Categorymaster.remove().exec(function () {
+              Product.remove().exec(function () {
+                Cart.remove().exec(function () {
+                  // Order.remove().exec(function() {
+                  Order.remove().exec(done);
+                  // });
+                });
               });
             });
           });
