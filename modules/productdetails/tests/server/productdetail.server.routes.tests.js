@@ -8,6 +8,7 @@ var should = require('should'),
   Product = mongoose.model('Product'),
   Shop = mongoose.model('Shop'),
   Shipping = mongoose.model('Shipping'),
+  Sizemaster = mongoose.model('Sizemaster'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -19,6 +20,7 @@ var app,
   user,
   shop,
   shipping,
+  sizemaster,
   agent;
 
 /**
@@ -65,6 +67,15 @@ describe('get product detail', function () {
       },
     });
 
+    sizemaster = new Sizemaster({
+      detail: 'US',
+      sizedetail: [{
+        name: '38'
+      }, {
+        name: '39'
+      }]
+    });
+
     shipping = new Shipping({
       name: 'shipping name',
       detail: 'shipping detail',
@@ -97,15 +108,7 @@ describe('get product detail', function () {
       }],
       shopseller: shop,
       issize: true,
-      size: {
-        detail: 'size detail',
-        sizedetail: [
-          {
-            name: 'sizedetail name',
-            qty: 5
-          }
-        ]
-      }
+      size: sizemaster
     });
     user.save(function () {
       shipping.save(function () {
@@ -161,9 +164,10 @@ describe('get product detail', function () {
           (products.shippings[0].shippingstartdate).should.match(productObj.shippings[0].shippingstartdate);
           (products.shippings[0].shippingenddate).should.match(productObj.shippings[0].shippingenddate);
           (products.issize).should.match(true);
-          (products.size.detail).should.match('size detail');
-          (products.size.sizedetail[0].name).should.match('sizedetail name');
-          (products.size.sizedetail[0].qty).should.match(5);
+          (products.size.detail).should.match('US');
+          (products.size.sizedetail.length).should.match(2);
+          (products.size.sizedetail[0].name).should.match('38');
+          (products.size.sizedetail[1].name).should.match('39');
           done();
         });
     });

@@ -83,13 +83,8 @@ var ProductSchema = new Schema({
     type: Boolean
   },
   size: {
-    detail: String,
-    sizedetail: [
-      {
-        name: String,
-        qty: Number
-      }
-    ]
+    type: Schema.ObjectId,
+    ref: 'Sizemaster'
   },
   created: {
     type: Date,
