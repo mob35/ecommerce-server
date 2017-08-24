@@ -7,6 +7,7 @@ var path = require('path'),
   mongoose = require('mongoose'),
   Shop = mongoose.model('Shop'),
   User = mongoose.model('User'),
+  Addressmaster = mongoose.model('Addressmaster'),
   // ManageUserShop = mongoose.model('ManageUserShop'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
@@ -26,8 +27,6 @@ exports.createUser = function (req, res, next) {
   // Then save the user
   user1.save(function (err) {
     if (err) {
-      console.log('save user error');
-      console.log(err);
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
@@ -37,19 +36,60 @@ exports.createUser = function (req, res, next) {
     }
   });
 };
-exports.createShop = function (req, res) {
+
+exports.createShop = function (req, res, next) {
   var shop = new Shop(req.shop);
   shop.user = req.createuser;
   shop.save(function (err) {
     if (err) {
-      console.log('save shpp error');
-      console.log(err);
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp({ user: req.createuser, shop: shop });
+      req.shop = shop;
+      next();
+      // res.jsonp({ user: req.createuser, shop: shop });
     }
+  });
+
+};
+
+exports.createAddress = function (req, res, next) {
+  var address = new Addressmaster(req.body.address);
+  address.user = req.createuser;
+  address.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.address = address;
+      next();
+      // res.jsonp({ user: req.createuser, shop: shop });
+    }
+  });
+
+};
+
+exports.updateAddressToShop = function (req, res, next) {
+
+  Shop.findById(req.shop._id, function (err, shop) {
+
+    shop.address = [{ address: req.address }];
+    shop.save(function (err) {
+      if (err) {
+        console.log('update shop error');
+        console.log(err);
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.jsonp({
+          user: req.createuser,
+          shop: shop
+        });
+      }
+    });
   });
 
 };
