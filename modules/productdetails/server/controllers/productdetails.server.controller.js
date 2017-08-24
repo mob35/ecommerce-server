@@ -23,7 +23,7 @@ exports.productdetailByID = function (req, res, next, id) {
   //   req.product = product;
   //   next();
   // });
-  Product.findById(id).populate('shippings.shipping').populate('size').populate({
+  Product.findById(id).populate('shippings.shipping').populate('shopseller').populate('size').populate({
     path: 'category',
     model: 'Categorymaster',
     populate: {
