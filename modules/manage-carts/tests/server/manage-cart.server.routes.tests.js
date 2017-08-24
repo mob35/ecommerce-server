@@ -25,6 +25,7 @@ var app,
   shop,
   product,
   product2,
+  product3,  
   shipping;
 
 
@@ -113,7 +114,9 @@ describe('Manage cart CRUD tests', function () {
         customerid: user,
         hisdate: new Date('2017-08-21')
       }],
-      shopseller: shop
+      shopseller: shop,
+      issize: true,
+      selectedsize: 'S'
     });
 
     product2 = new Product({
@@ -140,7 +143,8 @@ describe('Manage cart CRUD tests', function () {
         customerid: user,
         hisdate: new Date('2017-08-21')
       }],
-      shopseller: shop
+      shopseller: shop,
+      issize: false
     });
 
     cart2 = new Cart({

@@ -62,7 +62,19 @@ exports.processingAddUserCart = function (req, res, next) {
   if (req.cart.length > 0) {
     var item = req.cart[0];
     var data = item.products.filter(function (obj) {
-      return obj.product._id.toString() === product._id.toString();
+      // return obj.product._id.toString() === product._id.toString();
+      if (product.issize && product.issizeselectedsize) {
+        if (obj.product._id.toString() === product._id.toString()) {
+          if (obj.product.issizeselectedsize === product.issizeselectedsize) {
+            return true;
+          }
+        }
+      } else {
+        if (obj.product._id.toString() === product._id.toString()) {
+          return true;
+        }
+      }
+      return false;
     });
     if (data.length > 0) {
       data[0].qty++;
