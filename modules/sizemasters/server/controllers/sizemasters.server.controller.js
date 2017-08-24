@@ -5,113 +5,113 @@
  */
 var path = require('path'),
   mongoose = require('mongoose'),
-  Product = mongoose.model('Product'),
+  Sizemaster = mongoose.model('Sizemaster'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
 /**
- * Create a Product
+ * Create a Sizemaster
  */
 exports.create = function(req, res) {
-  var product = new Product(req.body);
-  product.user = req.user;
+  var sizemaster = new Sizemaster(req.body);
+  sizemaster.user = req.user;
 
-  product.save(function(err) {
+  sizemaster.save(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(product);
+      res.jsonp(sizemaster);
     }
   });
 };
 
 /**
- * Show the current Product
+ * Show the current Sizemaster
  */
 exports.read = function(req, res) {
   // convert mongoose document to JSON
-  var product = req.product ? req.product.toJSON() : {};
+  var sizemaster = req.sizemaster ? req.sizemaster.toJSON() : {};
 
   // Add a custom field to the Article, for determining if the current User is the "owner".
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
-  product.isCurrentUserOwner = req.user && product.user && product.user._id.toString() === req.user._id.toString();
+  sizemaster.isCurrentUserOwner = req.user && sizemaster.user && sizemaster.user._id.toString() === req.user._id.toString();
 
-  res.jsonp(product);
+  res.jsonp(sizemaster);
 };
 
 /**
- * Update a Product
+ * Update a Sizemaster
  */
 exports.update = function(req, res) {
-  var product = req.product;
+  var sizemaster = req.sizemaster;
 
-  product = _.extend(product, req.body);
+  sizemaster = _.extend(sizemaster, req.body);
 
-  product.save(function(err) {
+  sizemaster.save(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(product);
+      res.jsonp(sizemaster);
     }
   });
 };
 
 /**
- * Delete an Product
+ * Delete an Sizemaster
  */
 exports.delete = function(req, res) {
-  var product = req.product;
+  var sizemaster = req.sizemaster;
 
-  product.remove(function(err) {
+  sizemaster.remove(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(product);
+      res.jsonp(sizemaster);
     }
   });
 };
 
 /**
- * List of Products
+ * List of Sizemasters
  */
 exports.list = function(req, res) {
-  Product.find().sort('-created').populate('user', 'displayName').populate('shippings.shipping').exec(function(err, products) {
+  Sizemaster.find().sort('-created').populate('user', 'displayName').exec(function(err, sizemasters) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(products);
+      res.jsonp(sizemasters);
     }
   });
 };
 
 /**
- * Product middleware
+ * Sizemaster middleware
  */
-exports.productByID = function(req, res, next, id) {
+exports.sizemasterByID = function(req, res, next, id) {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send({
-      message: 'Product is invalid'
+      message: 'Sizemaster is invalid'
     });
   }
 
-  Product.findById(id).populate('user', 'displayName').exec(function (err, product) {
+  Sizemaster.findById(id).populate('user', 'displayName').exec(function (err, sizemaster) {
     if (err) {
       return next(err);
-    } else if (!product) {
+    } else if (!sizemaster) {
       return res.status(404).send({
-        message: 'No Product with that identifier has been found'
+        message: 'No Sizemaster with that identifier has been found'
       });
     }
-    req.product = product;
+    req.sizemaster = sizemaster;
     next();
   });
 };

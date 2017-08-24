@@ -5,113 +5,113 @@
  */
 var path = require('path'),
   mongoose = require('mongoose'),
-  Product = mongoose.model('Product'),
+  Categorymaster = mongoose.model('Categorymaster'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
 /**
- * Create a Product
+ * Create a Categorymaster
  */
 exports.create = function(req, res) {
-  var product = new Product(req.body);
-  product.user = req.user;
+  var categorymaster = new Categorymaster(req.body);
+  categorymaster.user = req.user;
 
-  product.save(function(err) {
+  categorymaster.save(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(product);
+      res.jsonp(categorymaster);
     }
   });
 };
 
 /**
- * Show the current Product
+ * Show the current Categorymaster
  */
 exports.read = function(req, res) {
   // convert mongoose document to JSON
-  var product = req.product ? req.product.toJSON() : {};
+  var categorymaster = req.categorymaster ? req.categorymaster.toJSON() : {};
 
   // Add a custom field to the Article, for determining if the current User is the "owner".
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
-  product.isCurrentUserOwner = req.user && product.user && product.user._id.toString() === req.user._id.toString();
+  categorymaster.isCurrentUserOwner = req.user && categorymaster.user && categorymaster.user._id.toString() === req.user._id.toString();
 
-  res.jsonp(product);
+  res.jsonp(categorymaster);
 };
 
 /**
- * Update a Product
+ * Update a Categorymaster
  */
 exports.update = function(req, res) {
-  var product = req.product;
+  var categorymaster = req.categorymaster;
 
-  product = _.extend(product, req.body);
+  categorymaster = _.extend(categorymaster, req.body);
 
-  product.save(function(err) {
+  categorymaster.save(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(product);
+      res.jsonp(categorymaster);
     }
   });
 };
 
 /**
- * Delete an Product
+ * Delete an Categorymaster
  */
 exports.delete = function(req, res) {
-  var product = req.product;
+  var categorymaster = req.categorymaster;
 
-  product.remove(function(err) {
+  categorymaster.remove(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(product);
+      res.jsonp(categorymaster);
     }
   });
 };
 
 /**
- * List of Products
+ * List of Categorymasters
  */
 exports.list = function(req, res) {
-  Product.find().sort('-created').populate('user', 'displayName').populate('shippings.shipping').exec(function(err, products) {
+  Categorymaster.find().sort('-created').populate('user', 'displayName').exec(function(err, categorymasters) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(products);
+      res.jsonp(categorymasters);
     }
   });
 };
 
 /**
- * Product middleware
+ * Categorymaster middleware
  */
-exports.productByID = function(req, res, next, id) {
+exports.categorymasterByID = function(req, res, next, id) {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send({
-      message: 'Product is invalid'
+      message: 'Categorymaster is invalid'
     });
   }
 
-  Product.findById(id).populate('user', 'displayName').exec(function (err, product) {
+  Categorymaster.findById(id).populate('user', 'displayName').exec(function (err, categorymaster) {
     if (err) {
       return next(err);
-    } else if (!product) {
+    } else if (!categorymaster) {
       return res.status(404).send({
-        message: 'No Product with that identifier has been found'
+        message: 'No Categorymaster with that identifier has been found'
       });
     }
-    req.product = product;
+    req.categorymaster = categorymaster;
     next();
   });
 };

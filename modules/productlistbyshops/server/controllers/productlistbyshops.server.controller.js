@@ -22,7 +22,7 @@ exports.productlistbyshopByID = function(req, res, next, productlistbyshopId) {
                 message: 'No Product with that identifier has been found'
             });
         }
-        console.log(product);
+        // console.log(product);
 
         req.shopId = product;
         next();

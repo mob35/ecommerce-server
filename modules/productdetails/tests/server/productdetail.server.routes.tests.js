@@ -68,7 +68,8 @@ describe('get product detail', function () {
     shipping = new Shipping({
       name: 'shipping name',
       detail: 'shipping detail',
-      days: 10
+      days: 10,
+      price: 50
     });
 
     product = new Product({
@@ -91,7 +92,6 @@ describe('get product detail', function () {
       }],
       shippings: [{
         shipping: shipping,
-        shippingprice: 10,
         shippingstartdate: new Date('2017-08-21'),
         shippingenddate: new Date('2017-08-21')
       }],
@@ -152,8 +152,12 @@ describe('get product detail', function () {
           (products.view).should.match(0);
           (products.qty).should.match(productObj.qty);
           (products.shop).should.match(shop.id);
-          (products.shippings[0].shipping).should.match(shipping.id);
-          (products.shippings[0].shippingprice).should.match(productObj.shippings[0].shippingprice);
+          (products.shippings[0].shipping.name).should.match('shipping name');
+          (products.shippings[0].shipping.detail).should.match('shipping detail');
+          (products.shippings[0].shipping.days).should.match(10);
+          (products.shippings[0].shipping.price).should.match(50);
+          (products.shippings[0].shippingstartdate).should.match(new Date('2017-08-21'));
+          (products.shippings[0].shippingenddate).should.match(new Date('2017-08-21'));
           (products.shippings[0].shippingstartdate).should.match(productObj.shippings[0].shippingstartdate);
           (products.shippings[0].shippingenddate).should.match(productObj.shippings[0].shippingenddate);
           (products.issize).should.match(true);
