@@ -8,6 +8,7 @@ var should = require('should'),
   Product = mongoose.model('Product'),
   Shop = mongoose.model('Shop'),
   Shipping = mongoose.model('Shipping'),
+  Sizemaster = mongoose.model('Sizemaster'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -19,6 +20,7 @@ var app,
   user,
   shop,
   shipping,
+  sizemaster,
   agent;
 
 /**
@@ -65,10 +67,20 @@ describe('get product detail', function () {
       },
     });
 
+    sizemaster = new Sizemaster({
+      detail: 'US',
+      sizedetail: [{
+        name: '38'
+      }, {
+        name: '39'
+      }]
+    });
+
     shipping = new Shipping({
       name: 'shipping name',
       detail: 'shipping detail',
-      days: 10
+      days: 10,
+      price: 50
     });
 
     product = new Product({
@@ -91,26 +103,19 @@ describe('get product detail', function () {
       }],
       shippings: [{
         shipping: shipping,
-        shippingprice: 10,
         shippingstartdate: new Date('2017-08-21'),
         shippingenddate: new Date('2017-08-21')
       }],
       shopseller: shop,
       issize: true,
-      size: {
-        detail: 'size detail',
-        sizedetail: [
-          {
-            name: 'sizedetail name',
-            qty: 5
-          }
-        ]
-      }
+      size: sizemaster
     });
     user.save(function () {
       shipping.save(function () {
-        shop.save(function () {
-          done();
+        sizemaster.save(function () {
+          shop.save(function () {
+            done();
+          });
         });
       });
     });
@@ -152,14 +157,19 @@ describe('get product detail', function () {
           (products.view).should.match(0);
           (products.qty).should.match(productObj.qty);
           (products.shop).should.match(shop.id);
-          (products.shippings[0].shipping).should.match(shipping.id);
-          (products.shippings[0].shippingprice).should.match(productObj.shippings[0].shippingprice);
+          (products.shippings[0].shipping.name).should.match('shipping name');
+          (products.shippings[0].shipping.detail).should.match('shipping detail');
+          (products.shippings[0].shipping.days).should.match(10);
+          (products.shippings[0].shipping.price).should.match(50);
+          (products.shippings[0].shippingstartdate).should.match(new Date('2017-08-21'));
+          (products.shippings[0].shippingenddate).should.match(new Date('2017-08-21'));
           (products.shippings[0].shippingstartdate).should.match(productObj.shippings[0].shippingstartdate);
           (products.shippings[0].shippingenddate).should.match(productObj.shippings[0].shippingenddate);
           (products.issize).should.match(true);
-          (products.size.detail).should.match('size detail');
-          (products.size.sizedetail[0].name).should.match('sizedetail name');
-          (products.size.sizedetail[0].qty).should.match(5);
+          (products.size.detail).should.match('US');
+          (products.size.sizedetail.length).should.match(2);
+          (products.size.sizedetail[0].name).should.match('38');
+          (products.size.sizedetail[1].name).should.match('39');
           done();
         });
     });
@@ -170,9 +180,12 @@ describe('get product detail', function () {
     User.remove().exec(function () {
       Shop.remove().exec(function () {
         Shipping.remove().exec(function () {
-          Product.remove().exec(done);
+          Sizemaster.remove().exec(function () {
+            Product.remove().exec(done);
+          });
         });
       });
     });
   });
+
 });

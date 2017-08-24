@@ -51,7 +51,10 @@ describe('Shipping CRUD tests', function () {
     // Save a user to the test db and create new Shipping
     user.save(function () {
       shipping = {
-        name: 'Shipping name'
+        name: 'Shipping name',
+        detail: 'Shipping detail',
+        days: 5,
+        price: 50
       };
 
       done();
@@ -95,6 +98,9 @@ describe('Shipping CRUD tests', function () {
                 // Set assertions
                 (shippings[0].user._id).should.equal(userId);
                 (shippings[0].name).should.match('Shipping name');
+                (shippings[0].detail).should.match('Shipping detail');
+                (shippings[0].days).should.match(5);
+                (shippings[0].price).should.match(50);
 
                 // Call the assertion callback
                 done();

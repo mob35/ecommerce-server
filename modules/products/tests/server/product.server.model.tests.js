@@ -49,7 +49,8 @@ describe('Product Model Unit Tests:', function () {
     shipping = new Shipping({
       name: 'shipping name',
       detail: 'shipping detail',
-      days: 10
+      days: 10,
+      price: 50
     });
 
     user.save(function () {

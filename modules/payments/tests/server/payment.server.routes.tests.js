@@ -8,6 +8,7 @@ var should = require('should'),
     Cart = mongoose.model('Cart'),
     Product = mongoose.model('Product'),
     Order = mongoose.model('Order'),
+    Addressmaster = mongoose.model('Addressmaster'),
     express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -24,9 +25,9 @@ var app,
 /**
  * Payment routes tests
  */
-describe('Create Payment', function() {
+describe('Create Payment', function () {
 
-    before(function(done) {
+    before(function (done) {
         // Get application
         app = express.init(mongoose);
         agent = request.agent(app);
@@ -34,7 +35,7 @@ describe('Create Payment', function() {
         done();
     });
 
-    beforeEach(function(done) {
+    beforeEach(function (done) {
         // Create user credentials
         credentials = {
             username: 'username',
@@ -82,11 +83,14 @@ describe('Create Payment', function() {
             user: user
         });
         // Save a user to the test db and create new Payment
-        user.save(function() {
-            product.save(function() {
-                cart.save(function() {
+        user.save(function () {
+            product.save(function () {
+                cart.save(function () {
                     order = {
                         shipping: {
+                            firstname: 'Full',
+                            lastname: 'Name',
+                            tel: '9999999999',
                             address: '499/195',
                             subdistrict: 'Khongthanon',
                             district: 'Saimai',
@@ -124,11 +128,11 @@ describe('Create Payment', function() {
         });
     });
 
-    it('should be able to save a Payment ', function(done) {
+    it('should be able to save a Payment ', function (done) {
         agent.post('/api/auth/signin')
             .send(credentials)
             .expect(200)
-            .end(function(signinErr, signinRes) {
+            .end(function (signinErr, signinRes) {
                 // Handle signin error
                 if (signinErr) {
                     return done(signinErr);
@@ -136,7 +140,7 @@ describe('Create Payment', function() {
                 // Get the userId
                 var userId = user.id;
                 agent.get('/api/carts')
-                    .end(function(cart1GetErr, cart1) {
+                    .end(function (cart1GetErr, cart1) {
                         // Handle Orders save error
                         if (cart1GetErr) {
                             return done(cart1GetErr);
@@ -148,7 +152,7 @@ describe('Create Payment', function() {
                         agent.post('/api/payments')
                             .send(order)
                             .expect(200)
-                            .end(function(orderSaveErr, orderSaveRes) {
+                            .end(function (orderSaveErr, orderSaveRes) {
                                 // Handle Order save error
                                 if (orderSaveErr) {
                                     return done(orderSaveErr);
@@ -156,7 +160,7 @@ describe('Create Payment', function() {
 
                                 // Get a list of Orders
                                 agent.get('/api/orders')
-                                    .end(function(ordersGetErr, ordersGetRes) {
+                                    .end(function (ordersGetErr, ordersGetRes) {
                                         // Handle Orders save error
                                         if (ordersGetErr) {
                                             return done(ordersGetErr);
@@ -172,7 +176,7 @@ describe('Create Payment', function() {
 
                                         // Call the assertion callback
                                         agent.get('/api/carts')
-                                            .end(function(cartGetErr, cartGetRes) {
+                                            .end(function (cartGetErr, cartGetRes) {
                                                 // Handle Orders save error
                                                 if (cartGetErr) {
                                                     return done(cartGetErr);
@@ -192,10 +196,10 @@ describe('Create Payment', function() {
                     });
             });
     });
-    afterEach(function(done) {
-        User.remove().exec(function() {
-            Product.remove().exec(function() {
-                Cart.remove().exec(function() {
+    afterEach(function (done) {
+        User.remove().exec(function () {
+            Product.remove().exec(function () {
+                Cart.remove().exec(function () {
                     // Order.remove().exec(function() {
                     Order.remove().exec(done);
                     // });

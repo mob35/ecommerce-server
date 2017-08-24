@@ -75,7 +75,6 @@ var ProductSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'Shipping'
       },
-      shippingprice: Number,
       shippingstartdate: Date,
       shippingenddate: Date
     }]
@@ -84,13 +83,8 @@ var ProductSchema = new Schema({
     type: Boolean
   },
   size: {
-    detail: String,
-    sizedetail: [
-      {
-        name: String,
-        qty: Number
-      }
-    ]
+    type: Schema.ObjectId,
+    ref: 'Sizemaster'
   },
   created: {
     type: Date,

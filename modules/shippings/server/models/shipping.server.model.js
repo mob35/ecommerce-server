@@ -14,8 +14,18 @@ var ShippingSchema = new Schema({
         type: String,
         required: 'Please fill Shipping name'
     },
-    detail: String,
-    days: Number,
+    detail: {
+        type: String,
+        required: 'Please fill Shipping detail'
+    },
+    days: {
+        type: Number,
+        required: 'Please fill Shipping days'
+    },
+    price: {
+        type: Number,
+        required: 'Please fill Shipping price'
+    },
     created: {
         type: Date,
         default: Date.now
