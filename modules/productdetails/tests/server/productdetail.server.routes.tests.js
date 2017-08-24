@@ -8,6 +8,7 @@ var should = require('should'),
   Product = mongoose.model('Product'),
   Shop = mongoose.model('Shop'),
   Shipping = mongoose.model('Shipping'),
+  Categorymaster = mongoose.model('Categorymaster'),
   Sizemaster = mongoose.model('Sizemaster'),
   express = require(path.resolve('./config/lib/express'));
 
@@ -21,6 +22,7 @@ var app,
   shop,
   shipping,
   sizemaster,
+  categorymaster,
   agent;
 
 /**
@@ -83,6 +85,13 @@ describe('get product detail', function () {
       price: 50
     });
 
+    categorymaster = new Categorymaster({
+      name: 'categorymaster name',
+      detail: 'categorymaster detail',
+      parent: 'categorymaster parent',
+      user: user
+    });
+
     product = new Product({
       name: 'Product name',
       detail: 'Product detail',
@@ -108,13 +117,16 @@ describe('get product detail', function () {
       }],
       shopseller: shop,
       issize: true,
-      size: sizemaster
+      size: sizemaster,
+      category: categorymaster
     });
     user.save(function () {
       shipping.save(function () {
         sizemaster.save(function () {
           shop.save(function () {
-            done();
+            categorymaster.save(function () {
+              done();
+            });
           });
         });
       });
@@ -156,7 +168,7 @@ describe('get product detail', function () {
           (products.historylog[0].hisdate).should.match(productObj.historylog[0].hisdate);
           (products.view).should.match(0);
           (products.qty).should.match(productObj.qty);
-          (products.shop).should.match(shop.id);
+          (products.shopseller).should.match(shop.id);
           (products.shippings[0].shipping.name).should.match('shipping name');
           (products.shippings[0].shipping.detail).should.match('shipping detail');
           (products.shippings[0].shipping.days).should.match(10);
@@ -170,6 +182,10 @@ describe('get product detail', function () {
           (products.size.sizedetail.length).should.match(2);
           (products.size.sizedetail[0].name).should.match('38');
           (products.size.sizedetail[1].name).should.match('39');
+          (products.category.name).should.match('categorymaster name');
+          (products.category.detail).should.match('categorymaster detail');
+          (products.category.parent).should.match('categorymaster parent');
+          (products.category.user.displayName).should.match('Full Name');
           done();
         });
     });
@@ -181,7 +197,9 @@ describe('get product detail', function () {
       Shop.remove().exec(function () {
         Shipping.remove().exec(function () {
           Sizemaster.remove().exec(function () {
-            Product.remove().exec(done);
+            Categorymaster.remove().exec(function () {
+              Product.remove().exec(done);
+            });
           });
         });
       });

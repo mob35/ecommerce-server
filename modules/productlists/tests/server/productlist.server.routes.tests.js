@@ -8,6 +8,7 @@ var should = require('should'),
     Product = mongoose.model('Product'),
     Shop = mongoose.model('Shop'),
     Shipping = mongoose.model('Shipping'),
+    Categorymaster = mongoose.model('Categorymaster'),
     express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -19,6 +20,7 @@ var app,
     user,
     shop,
     shipping,
+    categorymaster,
     product;
 // productlist;
 
@@ -72,6 +74,13 @@ describe('Productlist CRUD tests', function () {
             days: 10
         });
 
+        categorymaster = new Categorymaster({
+            name: 'categorymaster name',
+            detail: 'categorymaster detail',
+            parent: 'categorymaster parent',
+            user: user
+        });
+
         product = new Product({
             name: 'Product name',
             detail: 'Product detail',
@@ -96,15 +105,18 @@ describe('Productlist CRUD tests', function () {
                 shippingstartdate: new Date('2017-08-21'),
                 shippingenddate: new Date('2017-08-21')
             }],
-            shopseller: shop
+            shopseller: shop,
+            category: categorymaster
         });
 
         // Save a user to the test db and create new Productlist
         user.save(function () {
             shop.save(function () {
                 shipping.save(function () {
-                    product.save(function () {
-                        done();
+                    categorymaster.save(function () {
+                        product.save(function () {
+                            done();
+                        });
                     });
                 });
             });
@@ -131,8 +143,10 @@ describe('Productlist CRUD tests', function () {
         User.remove().exec(function () {
             Shop.remove().exec(function () {
                 Shipping.remove().exec(function () {
-                    Product.remove().exec(function () {
-                        done();
+                    Categorymaster.remove().exec(function () {
+                        Product.remove().exec(function () {
+                            done();
+                        });
                     });
                 });
             });

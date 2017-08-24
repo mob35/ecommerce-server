@@ -12,9 +12,16 @@ var path = require('path'),
     _ = require('lodash');
 
 
-exports.productlistbyshopByID = function(req, res, next, productlistbyshopId) {
+exports.productlistbyshopByID = function (req, res, next, productlistbyshopId) {
 
-    Product.find({ shopseller: { _id: productlistbyshopId } }).populate('shopseller').exec(function(err, product) {
+    Product.find({ shopseller: { _id: productlistbyshopId } }).populate('shopseller').populate({
+        path: 'category',
+        model: 'Categorymaster',
+        populate: {
+            path: 'user',
+            model: 'User'
+        }
+    }).exec(function (err, product) {
         if (err) {
             return next(err);
         } else if (!product) {
@@ -29,7 +36,7 @@ exports.productlistbyshopByID = function(req, res, next, productlistbyshopId) {
     });
 };
 
-exports.read = function(req, res) {
+exports.read = function (req, res) {
     res.jsonp(req.shopId);
 
 };

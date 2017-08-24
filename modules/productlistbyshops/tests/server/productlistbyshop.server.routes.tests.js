@@ -8,6 +8,7 @@ var should = require('should'),
     Product = mongoose.model('Product'),
     Shop = mongoose.model('Shop'),
     Shipping = mongoose.model('Shipping'),
+    Categorymaster = mongoose.model('Categorymaster'),
     Sizemaster = mongoose.model('Sizemaster'),
     express = require(path.resolve('./config/lib/express'));
 
@@ -22,6 +23,7 @@ var app,
     shipping,
     product,
     sizemaster,
+    categorymaster,
     user;
 
 /**
@@ -98,6 +100,13 @@ describe('Productlistbyshop CRUD tests', function () {
             }]
         });
 
+        categorymaster = new Categorymaster({
+            name: 'categorymaster name',
+            detail: 'categorymaster detail',
+            parent: 'categorymaster parent',
+            user: user
+        });
+
         product = new Product({
             name: 'Product name',
             detail: 'Product detail',
@@ -133,37 +142,40 @@ describe('Productlistbyshop CRUD tests', function () {
                 shop2.save(function () {
                     sizemaster.save(function () {
                         shipping.save(function () {
-                            product = {
-                                name: 'Product name',
-                                detail: 'Product detail',
-                                unitprice: 100,
-                                qty: 10,
-                                img: [{
-                                    url: 'imgurl',
-                                    id: 'imgid'
-                                }],
-                                preparedays: 10,
-                                favorite: [{
-                                    customerid: user,
-                                    favdate: new Date('2017-08-21')
-                                }],
-                                historylog: [{
-                                    customerid: user,
-                                    hisdate: new Date('2017-08-21')
-                                }],
-                                shippings: [{
-                                    shipping: shipping,
-                                    shippingprice: 10,
-                                    shippingstartdate: new Date('2017-08-21'),
-                                    shippingenddate: new Date('2017-08-21')
-                                }],
-                                shopseller: shop,
-                                issize: true,
-                                size: sizemaster
-                            };
-                            // product.save(function() {
-                            done();
-                            // });
+                            categorymaster.save(function () {
+                                product = {
+                                    name: 'Product name',
+                                    detail: 'Product detail',
+                                    unitprice: 100,
+                                    qty: 10,
+                                    img: [{
+                                        url: 'imgurl',
+                                        id: 'imgid'
+                                    }],
+                                    preparedays: 10,
+                                    favorite: [{
+                                        customerid: user,
+                                        favdate: new Date('2017-08-21')
+                                    }],
+                                    historylog: [{
+                                        customerid: user,
+                                        hisdate: new Date('2017-08-21')
+                                    }],
+                                    shippings: [{
+                                        shipping: shipping,
+                                        shippingprice: 10,
+                                        shippingstartdate: new Date('2017-08-21'),
+                                        shippingenddate: new Date('2017-08-21')
+                                    }],
+                                    shopseller: shop,
+                                    issize: true,
+                                    size: sizemaster,
+                                    category: categorymaster
+                                };
+                                // product.save(function() {
+                                done();
+                                // });
+                            });
                         });
                     });
                 });
@@ -212,7 +224,8 @@ describe('Productlistbyshop CRUD tests', function () {
             }],
             shopseller: shop,
             issize: true,
-            size: sizemaster
+            size: sizemaster,
+            category: categorymaster
         });
         var productObj2 = new Product({
             name: 'Product name',
@@ -240,7 +253,8 @@ describe('Productlistbyshop CRUD tests', function () {
             }],
             shopseller: shop,
             issize: true,
-            size: sizemaster
+            size: sizemaster,
+            category: categorymaster
         });
         var productObj3 = new Product({
             name: 'Product name',
@@ -268,7 +282,8 @@ describe('Productlistbyshop CRUD tests', function () {
             }],
             shopseller: shop2,
             issize: true,
-            size: sizemaster
+            size: sizemaster,
+            category: categorymaster
         });
 
 
@@ -299,8 +314,10 @@ describe('Productlistbyshop CRUD tests', function () {
         User.remove().exec(function () {
             Shop.remove().exec(function () {
                 Shipping.remove().exec(function () {
-                    Product.remove().exec(function () {
-                        done();
+                    Categorymaster.remove().exec(function () {
+                        Product.remove().exec(function () {
+                            done();
+                        });
                     });
                 });
             });
