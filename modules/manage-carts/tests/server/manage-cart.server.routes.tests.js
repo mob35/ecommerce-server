@@ -25,7 +25,7 @@ var app,
   shop,
   product,
   product2,
-  product3,  
+  product3,
   shipping;
 
 
@@ -88,6 +88,13 @@ describe('Manage cart CRUD tests', function () {
         lat: 'map lat',
         lng: 'map lng'
       },
+    });
+
+    shipping = new Shipping({
+      name: 'shipping name',
+      detail: 'shipping detail',
+      days: 10,
+      price: 50
     });
 
     product = new Product({
@@ -160,20 +167,22 @@ describe('Manage cart CRUD tests', function () {
     // Save a user to the test db and create new Cart
     user.save(function () {
       user2.save(function () {
-        shop.save(function () {
-          product.save(function () {
-            product2.save(function () {
-              cart2.save(function () {
-                cart = {
-                  products: [{
-                    product: product,
-                    itemamount: 100,
-                    qty: 1
-                  }],
-                  amount: 100,
-                  user: user
-                };
-                done();
+        shipping.save(function () {
+          shop.save(function () {
+            product.save(function () {
+              product2.save(function () {
+                cart2.save(function () {
+                  cart = {
+                    products: [{
+                      product: product,
+                      itemamount: 100,
+                      qty: 1
+                    }],
+                    amount: 100,
+                    user: user
+                  };
+                  done();
+                });
               });
             });
           });
