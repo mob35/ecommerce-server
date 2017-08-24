@@ -41,6 +41,14 @@ var ShopSchema = new Schema({
       type: String
     }
   },
+  address: {
+    type: [{
+      address: {
+        type: Schema.ObjectId,
+        ref: 'Addressmaster'
+      }
+    }]
+  },
   created: {
     type: Date,
     default: Date.now
