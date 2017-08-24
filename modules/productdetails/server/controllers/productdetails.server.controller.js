@@ -23,7 +23,14 @@ exports.productdetailByID = function (req, res, next, id) {
   //   req.product = product;
   //   next();
   // });
-  Product.findById(id).populate('shippings.shipping').populate('size').exec(function (err, product) {
+  Product.findById(id).populate('shippings.shipping').populate('size').populate({
+    path: 'category',
+    model: 'Categorymaster',
+    populate: {
+      path: 'user',
+      model: 'User'
+    }
+  }).exec(function (err, product) {
     // console.log(product);
     if (err) {
       return next(err);
@@ -50,9 +57,10 @@ exports.read = function (req, res) {
     preparedays: req.product.preparedays,
     qty: req.product.qty,
     shippings: req.product.shippings,
-    shop: req.product.shopseller,
+    shopseller: req.product.shopseller,
     issize: req.product.issize,
-    size: req.product.size
+    size: req.product.size,
+    category: req.product.category
   });
 };
 

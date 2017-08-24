@@ -14,7 +14,7 @@ var path = require('path'),
 //  * List of Productlists
 //  */
 exports.read = function (req, res, next) {
-    Product.find().sort('-created').exec(function (err, productlists) {
+    Product.find().sort('-created').populate('shopseller').exec(function (err, productlists) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)

@@ -7,6 +7,7 @@ var should = require('should'),
   User = mongoose.model('User'),
   Product = mongoose.model('Product'),
   Shipping = mongoose.model('Shipping'),
+  Categorymaster = mongoose.model('Categorymaster'),
   Sizemaster = mongoose.model('Sizemaster'),
   Shop = mongoose.model('Shop'),
   express = require(path.resolve('./config/lib/express'));
@@ -21,6 +22,7 @@ var app,
   product,
   shipping,
   sizemaster,
+  categorymaster,
   shop;
 
 /**
@@ -70,6 +72,13 @@ describe('Product CRUD tests', function () {
       }]
     });
 
+    categorymaster = new Categorymaster({
+      name: 'categorymaster name',
+      detail: 'categorymaster detail',
+      parent: 'categorymaster parent',
+      user: user
+    });
+
     shop = new Shop({
       name: 'Shop name',
       detail: 'Shop detail',
@@ -89,35 +98,38 @@ describe('Product CRUD tests', function () {
       shop.save(function () {
         shipping.save(function () {
           sizemaster.save(function () {
-            product = {
-              name: 'Product name',
-              detail: 'Product detail',
-              unitprice: 100,
-              qty: 10,
-              img: [{
-                url: 'img url',
-                id: 'img id'
-              }],
-              preparedays: 10,
-              favorite: [{
-                customerid: user,
-                favdate: new Date('2017-08-21')
-              }],
-              historylog: [{
-                customerid: user,
-                hisdate: new Date('2017-08-21')
-              }],
-              shippings: [{
-                shipping: shipping,
-                // shippingprice: 10,
-                shippingstartdate: new Date('2017-08-21'),
-                shippingenddate: new Date('2017-08-21')
-              }],
-              shopseller: shop,
-              issize: true,
-              size: sizemaster
-            };
-            done();
+            categorymaster.save(function () {
+              product = {
+                name: 'Product name',
+                detail: 'Product detail',
+                unitprice: 100,
+                qty: 10,
+                img: [{
+                  url: 'img url',
+                  id: 'img id'
+                }],
+                preparedays: 10,
+                favorite: [{
+                  customerid: user,
+                  favdate: new Date('2017-08-21')
+                }],
+                historylog: [{
+                  customerid: user,
+                  hisdate: new Date('2017-08-21')
+                }],
+                shippings: [{
+                  shipping: shipping,
+                  // shippingprice: 10,
+                  shippingstartdate: new Date('2017-08-21'),
+                  shippingenddate: new Date('2017-08-21')
+                }],
+                shopseller: shop,
+                issize: true,
+                size: sizemaster,
+                category: categorymaster
+              };
+              done();
+            });
           });
         });
       });
@@ -182,6 +194,10 @@ describe('Product CRUD tests', function () {
                 (products[0].size.sizedetail.length).should.match(2);
                 (products[0].size.sizedetail[0].name).should.match('38');
                 (products[0].size.sizedetail[1].name).should.match('39');
+                (products[0].category.name).should.match('categorymaster name');
+                (products[0].category.detail).should.match('categorymaster detail');
+                (products[0].category.parent).should.match('categorymaster parent');
+                (products[0].category.user.displayName).should.match('Full Name');
 
                 // Call the assertion callback
                 done();
@@ -495,7 +511,9 @@ describe('Product CRUD tests', function () {
       Shop.remove().exec(function () {
         Shipping.remove().exec(function () {
           Sizemaster.remove().exec(function () {
-            Product.remove().exec(done);
+            Categorymaster.remove().exec(function () {
+              Product.remove().exec(done);
+            });
           });
         });
       });

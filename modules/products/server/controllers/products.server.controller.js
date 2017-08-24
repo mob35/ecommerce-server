@@ -12,11 +12,11 @@ var path = require('path'),
 /**
  * Create a Product
  */
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   var product = new Product(req.body);
   product.user = req.user;
 
-  product.save(function(err) {
+  product.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -30,7 +30,7 @@ exports.create = function(req, res) {
 /**
  * Show the current Product
  */
-exports.read = function(req, res) {
+exports.read = function (req, res) {
   // convert mongoose document to JSON
   var product = req.product ? req.product.toJSON() : {};
 
@@ -44,12 +44,12 @@ exports.read = function(req, res) {
 /**
  * Update a Product
  */
-exports.update = function(req, res) {
+exports.update = function (req, res) {
   var product = req.product;
 
   product = _.extend(product, req.body);
 
-  product.save(function(err) {
+  product.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -63,10 +63,10 @@ exports.update = function(req, res) {
 /**
  * Delete an Product
  */
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
   var product = req.product;
 
-  product.remove(function(err) {
+  product.remove(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -80,8 +80,15 @@ exports.delete = function(req, res) {
 /**
  * List of Products
  */
-exports.list = function(req, res) {
-  Product.find().sort('-created').populate('user', 'displayName').populate('shippings.shipping').populate('size').exec(function(err, products) {
+exports.list = function (req, res) {
+  Product.find().sort('-created').populate('user', 'displayName').populate('shippings.shipping').populate('size').populate({
+    path: 'category',
+    model: 'Categorymaster',
+    populate: {
+      path: 'user',
+      model: 'User'
+    }
+  }).exec(function (err, products) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -95,7 +102,7 @@ exports.list = function(req, res) {
 /**
  * Product middleware
  */
-exports.productByID = function(req, res, next, id) {
+exports.productByID = function (req, res, next, id) {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send({

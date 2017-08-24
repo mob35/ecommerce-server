@@ -8,6 +8,7 @@ var should = require('should'),
   Dashboard = mongoose.model('Dashboard'),
   Product = mongoose.model('Product'),
   Shipping = mongoose.model('Shipping'),
+  Categorymaster = mongoose.model('Categorymaster'),
   Shop = mongoose.model('Shop'),
   express = require(path.resolve('./config/lib/express'));
 
@@ -21,6 +22,7 @@ var app,
   product,
   shop,
   shipping,
+  categorymaster,
   dashboard;
 
 /**
@@ -75,6 +77,13 @@ describe('Dashboard CRUD tests', function () {
       user: user
     });
 
+    categorymaster = new Categorymaster({
+      name: 'categorymaster name',
+      detail: 'categorymaster detail',
+      parent: 'categorymaster parent',
+      user: user
+    });
+
     product = new Product({
       name: 'product1',
       unitprice: 100,
@@ -91,6 +100,7 @@ describe('Dashboard CRUD tests', function () {
       shippings: [{
         shipping: shipping
       }],
+      category: categorymaster,
       user: user
     });
 
@@ -99,8 +109,10 @@ describe('Dashboard CRUD tests', function () {
       dashboard.save(function () {
         shop.save(function () {
           shipping.save(function () {
-            product.save(function (err, result) {
-              done();
+            categorymaster.save(function () {
+              product.save(function (err, result) {
+                done();
+              });
             });
           });
         });
@@ -157,8 +169,10 @@ describe('Dashboard CRUD tests', function () {
       Dashboard.remove().exec(function () {
         Shop.remove().exec(function () {
           Shipping.remove().exec(function () {
-            Product.remove().exec(function () {
-              done();
+            Categorymaster.remove().exec(function () {
+              Product.remove().exec(function () {
+                done();
+              });
             });
           });
         });

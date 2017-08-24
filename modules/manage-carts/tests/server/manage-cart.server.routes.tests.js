@@ -9,6 +9,7 @@ var should = require('should'),
   Product = mongoose.model('Product'),
   Shop = mongoose.model('Shop'),
   Shipping = mongoose.model('Shipping'),
+  Categorymaster = mongoose.model('Categorymaster'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -26,6 +27,7 @@ var app,
   product,
   product2,
   product3,
+  categorymaster,
   shipping;
 
 
@@ -90,6 +92,14 @@ describe('Manage cart CRUD tests', function () {
       },
     });
 
+    categorymaster = new Categorymaster({
+      name: 'categorymaster name',
+      detail: 'categorymaster detail',
+      parent: 'categorymaster parent',
+      user: user
+    });
+
+
     shipping = new Shipping({
       name: 'shipping name',
       detail: 'shipping detail',
@@ -122,6 +132,7 @@ describe('Manage cart CRUD tests', function () {
         hisdate: new Date('2017-08-21')
       }],
       shopseller: shop,
+      category: categorymaster,
       issize: true,
       selectedsize: 'S'
     });
@@ -151,6 +162,7 @@ describe('Manage cart CRUD tests', function () {
         hisdate: new Date('2017-08-21')
       }],
       shopseller: shop,
+      category: categorymaster,
       issize: false
     });
 
@@ -168,20 +180,22 @@ describe('Manage cart CRUD tests', function () {
     user.save(function () {
       user2.save(function () {
         shipping.save(function () {
-          shop.save(function () {
-            product.save(function () {
-              product2.save(function () {
-                cart2.save(function () {
-                  cart = {
-                    products: [{
-                      product: product,
-                      itemamount: 100,
-                      qty: 1
-                    }],
-                    amount: 100,
-                    user: user
-                  };
-                  done();
+          categorymaster.save(function () {
+            shop.save(function () {
+              product.save(function () {
+                product2.save(function () {
+                  cart2.save(function () {
+                    cart = {
+                      products: [{
+                        product: product,
+                        itemamount: 100,
+                        qty: 1
+                      }],
+                      amount: 100,
+                      user: user
+                    };
+                    done();
+                  });
                 });
               });
             });
@@ -519,8 +533,10 @@ describe('Manage cart CRUD tests', function () {
   afterEach(function (done) {
     User.remove().exec(function () {
       Shop.remove().exec(function () {
-        Product.remove().exec(function () {
-          Cart.remove().exec(done);
+        Categorymaster.remove().exec(function () {
+          Product.remove().exec(function () {
+            Cart.remove().exec(done);
+          });
         });
       });
     });

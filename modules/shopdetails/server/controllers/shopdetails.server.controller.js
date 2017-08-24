@@ -29,7 +29,7 @@ exports.read = function (req, res) {
 };
 
 exports.productbyshop = function (req, res, next) {
-  Product.find({ shopseller: req.shopid }).populate('user', 'displayName').populate('address').exec(function (err, products) {
+  Product.find({ shopseller: req.shopid }).populate('user', 'displayName').exec(function (err, products) {
     if (err) {
       return next(err);
     } else if (!products) {
@@ -45,7 +45,7 @@ exports.productbyshop = function (req, res, next) {
 exports.shopdetailByID = function (req, res, next, id) {
   req.shopid = id;
   var test = {};
-  Shop.findById(id).populate('user', 'displayName').exec(function (err, shopdetail) {
+  Shop.findById(id).populate('user', 'displayName').populate('address.address').exec(function (err, shopdetail) {
     if (err) {
       return next(err);
     } else if (!shopdetail) {

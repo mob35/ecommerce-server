@@ -86,6 +86,11 @@ var ProductSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Sizemaster'
   },
+  category: {
+    required: 'Please fill Product category',
+    type: Schema.ObjectId,
+    ref: 'Categorymaster'
+  },
   created: {
     type: Date,
     default: Date.now

@@ -51,8 +51,18 @@ describe('Sizemaster CRUD tests', function () {
     // Save a user to the test db and create new Sizemaster
     user.save(function () {
       sizemaster = {
-        detail: 'US. Size',
-        sizedetail: [{ name: 'S' }],
+        detail: 'US',
+        sizedetail: [
+          { 
+            name: 'S' 
+          },{ 
+            name: 'M' 
+          },{ 
+            name: 'L' 
+          },{ 
+            name: 'XL' 
+          }
+        ],
         user: user
       };
 
@@ -96,7 +106,7 @@ describe('Sizemaster CRUD tests', function () {
 
                 // Set assertions
                 (sizemasters[0].user._id).should.equal(userId);
-                (sizemasters[0].detail).should.match('US. Size');
+                (sizemasters[0].detail).should.match('US');
                 (sizemasters[0].sizedetail[0].name).should.match('S');
                 // Call the assertion callback
                 done();
