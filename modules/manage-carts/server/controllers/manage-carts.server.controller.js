@@ -63,7 +63,7 @@ exports.processingAddUserCart = function (req, res, next) {
     var item = req.cart[0];
     var data = item.products.filter(function (obj) {
       // return obj.product._id.toString() === product._id.toString();
-      if (product.issize && product.issizeselectedsize) {
+      if (product.issize && product.selectedsize) {
         if (obj.product._id.toString() === product._id.toString()) {
           if (obj.selectedsize === product.selectedsize) {
             return true;
