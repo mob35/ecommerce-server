@@ -112,8 +112,10 @@ describe('get product detail', function () {
     });
     user.save(function () {
       shipping.save(function () {
-        shop.save(function () {
-          done();
+        sizemaster.save(function () {
+          shop.save(function () {
+            done();
+          });
         });
       });
     });
@@ -183,4 +185,5 @@ describe('get product detail', function () {
       });
     });
   });
+  
 });
