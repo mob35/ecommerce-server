@@ -75,7 +75,6 @@ var ProductSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'Shipping'
       },
-      shippingprice: Number,
       shippingstartdate: Date,
       shippingenddate: Date
     }]
