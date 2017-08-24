@@ -132,19 +132,30 @@ exports.getpopularproducts = function (req, res, next) {
 exports.getpopularshops = function (req, res, next) {
   var startDate = new Date().getFullYear() + '-' + new Date().getMonth() + '-1';
   var endDate = new Date();
-  Shop.find({ 'historylog.hisdate': { '$gte': startDate, '$lte': endDate } }, 'name img')
-    .skip(0).limit(4)
-    .exec(function (err, result) {
-      if (err) {
-        return res.status(404).send({
-          message: errorHandler.getErrorMessage(err)
-        });
-      } else {
-        req.popularshops = result;
-        console.log(req.popularshops);
-        next();
-      }
-    });
+  // Shop.find({ 'historylog.hisdate': { '$gte': startDate, '$lte': endDate } }, 'name img')
+  //   .skip(0).limit(4)
+  //   .exec(function (err, result) {
+  //     if (err) {
+  //       return res.status(404).send({
+  //         message: errorHandler.getErrorMessage(err)
+  //       });
+  //     } else {
+  //       req.popularshops = result;
+  //       next();
+  //     }
+  //   });
+  Shop.find({}, 'name img')
+  .skip(0).limit(4)
+  .exec(function (err, result) {
+    if (err) {
+      return res.status(404).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.popularshops = result;
+      next();
+    }
+  });
 };
 
 exports.getbestsellers = function (req, res, next) {
