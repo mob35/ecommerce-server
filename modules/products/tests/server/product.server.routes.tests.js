@@ -7,6 +7,7 @@ var should = require('should'),
   User = mongoose.model('User'),
   Product = mongoose.model('Product'),
   Shipping = mongoose.model('Shipping'),
+  Sizemaster = mongoose.model('Sizemaster'),
   Shop = mongoose.model('Shop'),
   express = require(path.resolve('./config/lib/express'));
 
@@ -19,6 +20,7 @@ var app,
   user,
   product,
   shipping,
+  sizemaster,
   shop;
 
 /**
@@ -59,6 +61,15 @@ describe('Product CRUD tests', function () {
       price: 50
     });
 
+    sizemaster = new Sizemaster({
+      detail: 'US',
+      sizedetail: [{
+        name: '38'
+      }, {
+        name: '39'
+      }]
+    });
+
     shop = new Shop({
       name: 'Shop name',
       detail: 'Shop detail',
@@ -77,33 +88,37 @@ describe('Product CRUD tests', function () {
     user.save(function () {
       shop.save(function () {
         shipping.save(function () {
-          product = {
-            name: 'Product name',
-            detail: 'Product detail',
-            unitprice: 100,
-            qty: 10,
-            img: [{
-              url: 'img url',
-              id: 'img id'
-            }],
-            preparedays: 10,
-            favorite: [{
-              customerid: user,
-              favdate: new Date('2017-08-21')
-            }],
-            historylog: [{
-              customerid: user,
-              hisdate: new Date('2017-08-21')
-            }],
-            shippings: [{
-              shipping: shipping,
-              // shippingprice: 10,
-              shippingstartdate: new Date('2017-08-21'),
-              shippingenddate: new Date('2017-08-21')
-            }],
-            shopseller: shop
-          };
-          done();
+          sizemaster.save(function () {
+            product = {
+              name: 'Product name',
+              detail: 'Product detail',
+              unitprice: 100,
+              qty: 10,
+              img: [{
+                url: 'img url',
+                id: 'img id'
+              }],
+              preparedays: 10,
+              favorite: [{
+                customerid: user,
+                favdate: new Date('2017-08-21')
+              }],
+              historylog: [{
+                customerid: user,
+                hisdate: new Date('2017-08-21')
+              }],
+              shippings: [{
+                shipping: shipping,
+                // shippingprice: 10,
+                shippingstartdate: new Date('2017-08-21'),
+                shippingenddate: new Date('2017-08-21')
+              }],
+              shopseller: shop,
+              issize: true,
+              size: sizemaster
+            };
+            done();
+          });
         });
       });
     });
@@ -162,6 +177,11 @@ describe('Product CRUD tests', function () {
                 (products[0].shippings[0].shipping.price).should.match(50);
                 (products[0].shippings[0].shippingstartdate).should.match(new Date('2017-08-21'));
                 (products[0].shippings[0].shippingenddate).should.match(new Date('2017-08-21'));
+                (products[0].issize).should.match(true);
+                (products[0].size.detail).should.match('US');
+                (products[0].size.sizedetail.length).should.match(2);
+                (products[0].size.sizedetail[0].name).should.match('38');
+                (products[0].size.sizedetail[1].name).should.match('39');
 
                 // Call the assertion callback
                 done();
@@ -474,7 +494,9 @@ describe('Product CRUD tests', function () {
     User.remove().exec(function () {
       Shop.remove().exec(function () {
         Shipping.remove().exec(function () {
-          Product.remove().exec(done);
+          Sizemaster.remove().exec(function () {
+            Product.remove().exec(done);
+          });
         });
       });
     });
