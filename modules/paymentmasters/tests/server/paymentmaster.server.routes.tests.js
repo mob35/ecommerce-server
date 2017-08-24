@@ -20,9 +20,9 @@ var app,
 /**
  * Paymentmaster routes tests
  */
-describe('Paymentmaster CRUD tests', function() {
+describe('Paymentmaster CRUD tests', function () {
 
-    before(function(done) {
+    before(function (done) {
         // Get application
         app = express.init(mongoose);
         agent = request.agent(app);
@@ -30,7 +30,7 @@ describe('Paymentmaster CRUD tests', function() {
         done();
     });
 
-    beforeEach(function(done) {
+    beforeEach(function (done) {
         // Create user credentials
         credentials = {
             username: 'username',
@@ -48,25 +48,53 @@ describe('Paymentmaster CRUD tests', function() {
             provider: 'local'
         });
 
-        // Save a user to the test db and create new Paymentmaster
-        user.save(function() {
-            paymentmaster = {
-                name: 'Paymentmaster name',
-                detail: 'Paymentmaster detail',
-                img: {
-                    url: 'Paymentmaster imgUrl'
-                }
-            };
+        paymentmaster2 = new Paymentmaster({
+            name: 'Credit Card',
+            detail: 'Paymentmaster detail',
+            img: {
+                url: 'Paymentmaster imgUrl'
+            }
+        });
+        paymentmaster3 = new Paymentmaster({
+            name: 'Delivery',
+            detail: 'Paymentmaster detail',
+            img: {
+                url: 'Paymentmaster imgUrl'
+            }
+        });
+        paymentmaster4 = new Paymentmaster({
+            name: 'Counter Service',
+            detail: 'Paymentmaster detail',
+            img: {
+                url: 'Paymentmaster imgUrl'
+            }
+        });
 
-            done();
+        // Save a user to the test db and create new Paymentmaster
+        user.save(function () {
+            paymentmaster2.save(function () {
+                paymentmaster3.save(function () {
+                    paymentmaster4.save(function () {
+                        paymentmaster = {
+                            name: 'Paymentmaster name',
+                            detail: 'Paymentmaster detail',
+                            img: {
+                                url: 'Paymentmaster imgUrl'
+                            }
+                        };
+
+                        done();
+                    });
+                });
+            });
         });
     });
 
-    it('should be able to save a Paymentmaster if logged in', function(done) {
+    it('should be able to save a Paymentmaster if logged in', function (done) {
         agent.post('/api/auth/signin')
             .send(credentials)
             .expect(200)
-            .end(function(signinErr, signinRes) {
+            .end(function (signinErr, signinRes) {
                 // Handle signin error
                 if (signinErr) {
                     return done(signinErr);
@@ -79,7 +107,7 @@ describe('Paymentmaster CRUD tests', function() {
                 agent.post('/api/paymentmasters')
                     .send(paymentmaster)
                     .expect(200)
-                    .end(function(paymentmasterSaveErr, paymentmasterSaveRes) {
+                    .end(function (paymentmasterSaveErr, paymentmasterSaveRes) {
                         // Handle Paymentmaster save error
                         if (paymentmasterSaveErr) {
                             return done(paymentmasterSaveErr);
@@ -87,7 +115,7 @@ describe('Paymentmaster CRUD tests', function() {
 
                         // Get a list of Paymentmasters
                         agent.get('/api/paymentmasters')
-                            .end(function(paymentmastersGetErr, paymentmastersGetRes) {
+                            .end(function (paymentmastersGetErr, paymentmastersGetRes) {
                                 // Handle Paymentmasters save error
                                 if (paymentmastersGetErr) {
                                     return done(paymentmastersGetErr);
@@ -109,24 +137,24 @@ describe('Paymentmaster CRUD tests', function() {
             });
     });
 
-    it('should not be able to save an Paymentmaster if not logged in', function(done) {
+    it('should not be able to save an Paymentmaster if not logged in', function (done) {
         agent.post('/api/paymentmasters')
             .send(paymentmaster)
             .expect(403)
-            .end(function(paymentmasterSaveErr, paymentmasterSaveRes) {
+            .end(function (paymentmasterSaveErr, paymentmasterSaveRes) {
                 // Call the assertion callback
                 done(paymentmasterSaveErr);
             });
     });
 
-    it('should not be able to save an Paymentmaster if no name is provided', function(done) {
+    it('should not be able to save an Paymentmaster if no name is provided', function (done) {
         // Invalidate name field
         paymentmaster.name = '';
 
         agent.post('/api/auth/signin')
             .send(credentials)
             .expect(200)
-            .end(function(signinErr, signinRes) {
+            .end(function (signinErr, signinRes) {
                 // Handle signin error
                 if (signinErr) {
                     return done(signinErr);
@@ -139,7 +167,7 @@ describe('Paymentmaster CRUD tests', function() {
                 agent.post('/api/paymentmasters')
                     .send(paymentmaster)
                     .expect(400)
-                    .end(function(paymentmasterSaveErr, paymentmasterSaveRes) {
+                    .end(function (paymentmasterSaveErr, paymentmasterSaveRes) {
                         // Set message assertion
                         (paymentmasterSaveRes.body.message).should.match('Please fill Paymentmaster name');
 
@@ -149,11 +177,11 @@ describe('Paymentmaster CRUD tests', function() {
             });
     });
 
-    it('should be able to update an Paymentmaster if signed in', function(done) {
+    it('should be able to update an Paymentmaster if signed in', function (done) {
         agent.post('/api/auth/signin')
             .send(credentials)
             .expect(200)
-            .end(function(signinErr, signinRes) {
+            .end(function (signinErr, signinRes) {
                 // Handle signin error
                 if (signinErr) {
                     return done(signinErr);
@@ -166,7 +194,7 @@ describe('Paymentmaster CRUD tests', function() {
                 agent.post('/api/paymentmasters')
                     .send(paymentmaster)
                     .expect(200)
-                    .end(function(paymentmasterSaveErr, paymentmasterSaveRes) {
+                    .end(function (paymentmasterSaveErr, paymentmasterSaveRes) {
                         // Handle Paymentmaster save error
                         if (paymentmasterSaveErr) {
                             return done(paymentmasterSaveErr);
@@ -179,7 +207,7 @@ describe('Paymentmaster CRUD tests', function() {
                         agent.put('/api/paymentmasters/' + paymentmasterSaveRes.body._id)
                             .send(paymentmaster)
                             .expect(200)
-                            .end(function(paymentmasterUpdateErr, paymentmasterUpdateRes) {
+                            .end(function (paymentmasterUpdateErr, paymentmasterUpdateRes) {
                                 // Handle Paymentmaster update error
                                 if (paymentmasterUpdateErr) {
                                     return done(paymentmasterUpdateErr);
@@ -196,15 +224,15 @@ describe('Paymentmaster CRUD tests', function() {
             });
     });
 
-    it('should be able to get a list of Paymentmasters if not signed in', function(done) {
+    it('should be able to get a list of Paymentmasters if not signed in', function (done) {
         // Create new Paymentmaster model instance
         var paymentmasterObj = new Paymentmaster(paymentmaster);
 
         // Save the paymentmaster
-        paymentmasterObj.save(function() {
+        paymentmasterObj.save(function () {
             // Request Paymentmasters
             request(app).get('/api/paymentmasters')
-                .end(function(req, res) {
+                .end(function (req, res) {
                     // Set assertion
                     res.body.should.be.instanceof(Array).and.have.lengthOf(1);
 
@@ -215,14 +243,14 @@ describe('Paymentmaster CRUD tests', function() {
         });
     });
 
-    it('should be able to get a single Paymentmaster if not signed in', function(done) {
+    it('should be able to get a single Paymentmaster if not signed in', function (done) {
         // Create new Paymentmaster model instance
         var paymentmasterObj = new Paymentmaster(paymentmaster);
 
         // Save the Paymentmaster
-        paymentmasterObj.save(function() {
+        paymentmasterObj.save(function () {
             request(app).get('/api/paymentmasters/' + paymentmasterObj._id)
-                .end(function(req, res) {
+                .end(function (req, res) {
                     // Set assertion
                     res.body.should.be.instanceof(Object).and.have.property('name', paymentmaster.name);
 
@@ -232,10 +260,10 @@ describe('Paymentmaster CRUD tests', function() {
         });
     });
 
-    it('should return proper error for single Paymentmaster with an invalid Id, if not signed in', function(done) {
+    it('should return proper error for single Paymentmaster with an invalid Id, if not signed in', function (done) {
         // test is not a valid mongoose Id
         request(app).get('/api/paymentmasters/test')
-            .end(function(req, res) {
+            .end(function (req, res) {
                 // Set assertion
                 res.body.should.be.instanceof(Object).and.have.property('message', 'Paymentmaster is invalid');
 
@@ -244,10 +272,10 @@ describe('Paymentmaster CRUD tests', function() {
             });
     });
 
-    it('should return proper error for single Paymentmaster which doesnt exist, if not signed in', function(done) {
+    it('should return proper error for single Paymentmaster which doesnt exist, if not signed in', function (done) {
         // This is a valid mongoose Id but a non-existent Paymentmaster
         request(app).get('/api/paymentmasters/559e9cd815f80b4c256a8f41')
-            .end(function(req, res) {
+            .end(function (req, res) {
                 // Set assertion
                 res.body.should.be.instanceof(Object).and.have.property('message', 'No Paymentmaster with that identifier has been found');
 
@@ -256,11 +284,11 @@ describe('Paymentmaster CRUD tests', function() {
             });
     });
 
-    it('should be able to delete an Paymentmaster if signed in', function(done) {
+    it('should be able to delete an Paymentmaster if signed in', function (done) {
         agent.post('/api/auth/signin')
             .send(credentials)
             .expect(200)
-            .end(function(signinErr, signinRes) {
+            .end(function (signinErr, signinRes) {
                 // Handle signin error
                 if (signinErr) {
                     return done(signinErr);
@@ -273,7 +301,7 @@ describe('Paymentmaster CRUD tests', function() {
                 agent.post('/api/paymentmasters')
                     .send(paymentmaster)
                     .expect(200)
-                    .end(function(paymentmasterSaveErr, paymentmasterSaveRes) {
+                    .end(function (paymentmasterSaveErr, paymentmasterSaveRes) {
                         // Handle Paymentmaster save error
                         if (paymentmasterSaveErr) {
                             return done(paymentmasterSaveErr);
@@ -283,7 +311,7 @@ describe('Paymentmaster CRUD tests', function() {
                         agent.delete('/api/paymentmasters/' + paymentmasterSaveRes.body._id)
                             .send(paymentmaster)
                             .expect(200)
-                            .end(function(paymentmasterDeleteErr, paymentmasterDeleteRes) {
+                            .end(function (paymentmasterDeleteErr, paymentmasterDeleteRes) {
                                 // Handle paymentmaster error error
                                 if (paymentmasterDeleteErr) {
                                     return done(paymentmasterDeleteErr);
@@ -299,7 +327,7 @@ describe('Paymentmaster CRUD tests', function() {
             });
     });
 
-    it('should not be able to delete an Paymentmaster if not signed in', function(done) {
+    it('should not be able to delete an Paymentmaster if not signed in', function (done) {
         // Set Paymentmaster user
         paymentmaster.user = user;
 
@@ -307,11 +335,11 @@ describe('Paymentmaster CRUD tests', function() {
         var paymentmasterObj = new Paymentmaster(paymentmaster);
 
         // Save the Paymentmaster
-        paymentmasterObj.save(function() {
+        paymentmasterObj.save(function () {
             // Try deleting Paymentmaster
             request(app).delete('/api/paymentmasters/' + paymentmasterObj._id)
                 .expect(403)
-                .end(function(paymentmasterDeleteErr, paymentmasterDeleteRes) {
+                .end(function (paymentmasterDeleteErr, paymentmasterDeleteRes) {
                     // Set message assertion
                     (paymentmasterDeleteRes.body.message).should.match('User is not authorized');
 
@@ -322,7 +350,7 @@ describe('Paymentmaster CRUD tests', function() {
         });
     });
 
-    it('should be able to get a single Paymentmaster that has an orphaned user reference', function(done) {
+    it('should be able to get a single Paymentmaster that has an orphaned user reference', function (done) {
         // Create orphan user creds
         var _creds = {
             username: 'orphan',
@@ -340,7 +368,7 @@ describe('Paymentmaster CRUD tests', function() {
             provider: 'local'
         });
 
-        _orphan.save(function(err, orphan) {
+        _orphan.save(function (err, orphan) {
             // Handle save error
             if (err) {
                 return done(err);
@@ -349,7 +377,7 @@ describe('Paymentmaster CRUD tests', function() {
             agent.post('/api/auth/signin')
                 .send(_creds)
                 .expect(200)
-                .end(function(signinErr, signinRes) {
+                .end(function (signinErr, signinRes) {
                     // Handle signin error
                     if (signinErr) {
                         return done(signinErr);
@@ -362,7 +390,7 @@ describe('Paymentmaster CRUD tests', function() {
                     agent.post('/api/paymentmasters')
                         .send(paymentmaster)
                         .expect(200)
-                        .end(function(paymentmasterSaveErr, paymentmasterSaveRes) {
+                        .end(function (paymentmasterSaveErr, paymentmasterSaveRes) {
                             // Handle Paymentmaster save error
                             if (paymentmasterSaveErr) {
                                 return done(paymentmasterSaveErr);
@@ -374,12 +402,12 @@ describe('Paymentmaster CRUD tests', function() {
                             should.equal(paymentmasterSaveRes.body.user._id, orphanId);
 
                             // force the Paymentmaster to have an orphaned user reference
-                            orphan.remove(function() {
+                            orphan.remove(function () {
                                 // now signin with valid user
                                 agent.post('/api/auth/signin')
                                     .send(credentials)
                                     .expect(200)
-                                    .end(function(err, res) {
+                                    .end(function (err, res) {
                                         // Handle signin error
                                         if (err) {
                                             return done(err);
@@ -388,7 +416,7 @@ describe('Paymentmaster CRUD tests', function() {
                                         // Get the Paymentmaster
                                         agent.get('/api/paymentmasters/' + paymentmasterSaveRes.body._id)
                                             .expect(200)
-                                            .end(function(paymentmasterInfoErr, paymentmasterInfoRes) {
+                                            .end(function (paymentmasterInfoErr, paymentmasterInfoRes) {
                                                 // Handle Paymentmaster error
                                                 if (paymentmasterInfoErr) {
                                                     return done(paymentmasterInfoErr);
@@ -409,8 +437,8 @@ describe('Paymentmaster CRUD tests', function() {
         });
     });
 
-    afterEach(function(done) {
-        User.remove().exec(function() {
+    afterEach(function (done) {
+        User.remove().exec(function () {
             Paymentmaster.remove().exec(done);
         });
     });
