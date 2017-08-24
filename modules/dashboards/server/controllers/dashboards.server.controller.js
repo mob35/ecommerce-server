@@ -8,6 +8,7 @@ var path = require('path'),
   Dashboard = mongoose.model('Dashboard'),
   Product = mongoose.model('Product'),
   Shop = mongoose.model('Shop'),
+  Order = mongoose.model('Order'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
@@ -97,7 +98,7 @@ exports.gettitleandbanner = function (req, res, next) {
 };
 
 exports.getlastvisit = function (req, res, next) {
-  Product.find({ 'historylog': { $in: [req.body.userid] } }, 'name img unitprice')
+  Product.find({ 'historylog.customerid': { $in: [req.body.customerid] } }, 'name img unitprice')
     .skip(0).limit(10)
     .exec(function (err, result) {
       if (err) {
@@ -112,9 +113,10 @@ exports.getlastvisit = function (req, res, next) {
 };
 
 exports.getpopularproducts = function (req, res, next) {
-  Product.find({}, 'name img unitprice')
-    .sort({ 'views': 1 })
-    .skip(0).limit(10)
+  var startDate = new Date().getFullYear() + '-' + new Date().getMonth() + '-1';
+  var endDate = new Date();
+  Product.find({ 'historylog.hisdate': { '$gte': startDate, '$lte': endDate } }, 'name img unitprice')
+    .skip(0).limit(4)
     .exec(function (err, result) {
       if (err) {
         return res.status(404).send({
@@ -128,9 +130,10 @@ exports.getpopularproducts = function (req, res, next) {
 };
 
 exports.getpopularshops = function (req, res, next) {
-  Shop.find({}, 'name img')
-    .sort({ 'views': 1 })
-    .skip(0).limit(10)
+  var startDate = new Date().getFullYear() + '-' + new Date().getMonth() + '-1';
+  var endDate = new Date();
+  Shop.find({ 'historylog.hisdate': { '$gte': startDate, '$lte': endDate } }, 'name img')
+    .skip(0).limit(4)
     .exec(function (err, result) {
       if (err) {
         return res.status(404).send({
@@ -143,13 +146,31 @@ exports.getpopularshops = function (req, res, next) {
     });
 };
 
+exports.getbestsellers = function (req, res, next) {
+  var startDate = new Date().getFullYear() + '-' + new Date().getMonth() + '-1';
+  var endDate = new Date();
+  Order.find({ 'created': { '$gte': startDate, '$lte': endDate } }, 'items.product')
+  .skip(0).limit(4)
+  .exec(function (err, result) {
+    if (err) {
+      return res.status(404).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.bestsellers = result;
+      next();
+    }
+  });
+};
+
 exports.list = function (req, res) {
   res.jsonp({
     banner_image: req.banner_image,
     banner_title: req.banner_title,
     lastvisit: req.lastvisit,
     popularproducts: req.popularproducts,
-    popularshops: req.popularshops
+    popularshops: req.popularshops,
+    bestsellers: req.bestsellers
   });
 };
 
