@@ -16,6 +16,10 @@ var CartSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'Product'
       },
+      selectedsize: {
+        name: String,
+        size: String
+      },
       itemamount: {
         type: Number
       },
