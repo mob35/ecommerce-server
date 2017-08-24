@@ -9,7 +9,7 @@ var dashboardsPolicy = require('../policies/dashboards.server.policy'),
 module.exports = function(app) {
   // Dashboards Routes
   app.route('/api/dashboards').all(dashboardsPolicy.isAllowed)
-    .get(dashboards.gettitleandbanner,dashboards.getlastvisit,dashboards.getpopularproducts,dashboards.getpopularshops,dashboards.list)
+    .get(dashboards.gettitleandbanner,dashboards.getlastvisit,dashboards.getpopularproducts,dashboards.getpopularshops,dashboards.getbestsellers,dashboards.list)
     .post(dashboards.create);
 
   app.route('/api/dashboards/:dashboardId').all(dashboardsPolicy.isAllowed)
