@@ -5,11 +5,11 @@
     .module('paymentmasters')
     .run(menuConfig);
 
-  menuConfig.$inject = ['menuService'];
+  menuConfig.$inject = ['Menus'];
 
-  function menuConfig(menuService) {
+  function menuConfig(Menus) {
     // Set top bar menu items
-    menuService.addMenuItem('topbar', {
+    Menus.addMenuItem('topbar', {
       title: 'Paymentmasters',
       state: 'paymentmasters',
       type: 'dropdown',
@@ -17,13 +17,13 @@
     });
 
     // Add the dropdown list item
-    menuService.addSubMenuItem('topbar', 'paymentmasters', {
+    Menus.addSubMenuItem('topbar', 'paymentmasters', {
       title: 'List Paymentmasters',
       state: 'paymentmasters.list'
     });
 
     // Add the dropdown create item
-    menuService.addSubMenuItem('topbar', 'paymentmasters', {
+    Menus.addSubMenuItem('topbar', 'paymentmasters', {
       title: 'Create Paymentmaster',
       state: 'paymentmasters.create',
       roles: ['user']
