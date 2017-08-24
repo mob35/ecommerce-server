@@ -65,7 +65,7 @@ exports.processingAddUserCart = function (req, res, next) {
       // return obj.product._id.toString() === product._id.toString();
       if (product.issize && product.issizeselectedsize) {
         if (obj.product._id.toString() === product._id.toString()) {
-          if (obj.issizeselectedsize === product.issizeselectedsize) {
+          if (obj.selectedsize === product.selectedsize) {
             return true;
           }
         }
