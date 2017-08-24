@@ -11,11 +11,8 @@ var mongoose = require('mongoose'),
  */
 var OrderSchema = new Schema({
     shipping: {
-        address: String,
-        subdistrict: String,
-        district: String,
-        province: String,
-        postcode: String,
+        type: Schema.ObjectId,
+        ref: 'Addressmaster'
     },
     items: [{
         product: {
