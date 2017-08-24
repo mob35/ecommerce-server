@@ -18,6 +18,7 @@ exports.read = function (req, res) {
     detail: req.shopdetail.detail,
     email: req.shopdetail.email,
     tel: req.shopdetail.tel,
+    address: req.shopdetail.address,
     _id: req.shopdetail._id,
     products: req.products
   };
@@ -28,7 +29,7 @@ exports.read = function (req, res) {
 };
 
 exports.productbyshop = function (req, res, next) {
-  Product.find({ shopseller: req.shopid }).populate('user', 'displayName').exec(function (err, products) {
+  Product.find({ shopseller: req.shopid }).populate('user', 'displayName').populate('address').exec(function (err, products) {
     if (err) {
       return next(err);
     } else if (!products) {
