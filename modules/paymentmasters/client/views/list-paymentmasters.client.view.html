@@ -1,0 +1,22 @@
+<section>
+  <div class="page-header">
+    <h1>Paymentmasters</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="paymentmaster in vm.paymentmasters"
+       ui-sref="paymentmasters.view({ paymentmasterId: paymentmaster._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="paymentmaster.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="paymentmaster.user" ng-bind="paymentmaster.user.displayName"></span>
+        <span ng-if="!paymentmaster.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="paymentmaster.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.paymentmasters.$resolved && !vm.paymentmasters.length">
+    No Paymentmasters yet, why don't you <a ui-sref="paymentmasters.create">create one</a>?
+  </div>
+</section>
