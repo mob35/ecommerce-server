@@ -37,17 +37,18 @@ exports.findUserCart = function (req, res, next) {
       populate: {
         path: 'product',
         model: 'Product',
-        populate: {
-          path: 'shopseller',
-          model: 'Shop',
-          populate: {
+        populate: [{
+            path: 'shopseller',
+            model: 'Shop'
+          },
+          {
             path: 'shippings',
             populate: {
               path: 'shipping',
               model: 'Shipping'
             }
           }
-        }
+        ]
       }
     }).exec(function (err, cart) {
       if (err) {
