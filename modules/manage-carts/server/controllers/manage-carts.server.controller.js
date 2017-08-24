@@ -37,10 +37,18 @@ exports.findUserCart = function (req, res, next) {
       populate: {
         path: 'product',
         model: 'Product',
-        populate: {
-          path: 'shopseller',
-          model: 'Shop'
-        }
+        populate: [{
+            path: 'shopseller',
+            model: 'Shop'
+          },
+          {
+            path: 'shippings',
+            populate: {
+              path: 'shipping',
+              model: 'Shipping'
+            }
+          }
+        ]
       }
     }).exec(function (err, cart) {
       if (err) {
@@ -100,7 +108,7 @@ exports.processingAddUserCart = function (req, res, next) {
       product: product,
       qty: 1,
       itemamount: product.unitprice,
-      selectedsize: product.selectedsize ? product.selectedsize : null,      
+      selectedsize: product.selectedsize ? product.selectedsize : null,
     }];
     var userCart = {
       products: products,

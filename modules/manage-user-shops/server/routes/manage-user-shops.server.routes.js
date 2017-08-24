@@ -8,7 +8,7 @@ var manageUserShopsPolicy = require('../policies/manage-user-shops.server.policy
 
 module.exports = function (app) {
   // Manage user shops Routes
-  app.route('/api/manage-user-shops').all(manageUserShopsPolicy.isAllowed)
+  app.route('/api/manage-user-shops')
     // .get(manageUserShops.list)
     .post(manageUserShops.createUser, manageUserShops.createShop, manageUserShops.createAddress, manageUserShops.updateAddressToShop);
 
