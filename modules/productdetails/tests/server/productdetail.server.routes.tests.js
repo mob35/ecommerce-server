@@ -180,10 +180,12 @@ describe('get product detail', function () {
     User.remove().exec(function () {
       Shop.remove().exec(function () {
         Shipping.remove().exec(function () {
-          Product.remove().exec(done);
+          Sizemaster.remove().exec(function () {
+            Product.remove().exec(done);
+          });
         });
       });
     });
   });
-  
+
 });
