@@ -83,6 +83,7 @@ exports.processingAddUserCart = function (req, res, next) {
       item.products.push({
         product: product,
         qty: 1,
+        selectedsize: product.selectedsize ? product.selectedsize : null,
         itemamount: product.unitprice
       });
     }
@@ -98,7 +99,8 @@ exports.processingAddUserCart = function (req, res, next) {
     var products = [{
       product: product,
       qty: 1,
-      itemamount: product.unitprice
+      itemamount: product.unitprice,
+      selectedsize: product.selectedsize ? product.selectedsize : null,      
     }];
     var userCart = {
       products: products,
