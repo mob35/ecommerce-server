@@ -6,6 +6,7 @@
 var path = require('path'),
     mongoose = require('mongoose'),
     Order = mongoose.model('Order'),
+    Addressmaster = mongoose.model('Addressmaster'),
     Cart = mongoose.model('Cart'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
     _ = require('lodash');
@@ -13,16 +14,38 @@ var path = require('path'),
 /**
  * Create a Payment
  */
-exports.createPayment = function(req, res, next) {
+exports.manageAddress = function (req, res, next) {
+    var address = new Addressmaster(req.body.shipping);
+    if (address && address._id) {
+        req.address = address;
+        next();
+    } else {
+        address.save(function (err) {
+            if (err) {
+                console.log(err);
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            } else {
+                req.address = address;
+                next();
+            }
+        });
+    }
+};
+
+
+exports.createPayment = function (req, res, next) {
     var order = new Order(req.body);
     order.user = req.user;
+    order.shipping = req.address;
     order.amount = 0;
-    order.items.forEach(function(product) {
+    order.items.forEach(function (product) {
         order.amount += product.amount;
     });
     order.totalamount = (order.amount - order.discount);
 
-    order.save(function(err) {
+    order.save(function (err) {
         if (err) {
             console.log(err);
             return res.status(400).send({
@@ -35,9 +58,9 @@ exports.createPayment = function(req, res, next) {
     });
 };
 
-exports.findCart = function(req, res, next) {
+exports.findCart = function (req, res, next) {
     var order = new Order(req.body);
-    Cart.findById(order.cart).populate('user', 'displayName').exec(function(err, cart) {
+    Cart.findById(order.cart).populate('user', 'displayName').exec(function (err, cart) {
         if (err) {
             return next(err);
         } else if (!cart) {
@@ -49,10 +72,10 @@ exports.findCart = function(req, res, next) {
         next();
     });
 };
-exports.clearCart = function(req, res) {
+exports.clearCart = function (req, res) {
     var cart = req.cart;
 
-    cart.remove(function(err) {
+    cart.remove(function (err) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)

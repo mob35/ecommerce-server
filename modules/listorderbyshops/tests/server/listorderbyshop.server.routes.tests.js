@@ -10,6 +10,7 @@ var should = require('should'),
   Order = mongoose.model('Order'),
   Shop = mongoose.model('Shop'),
   Shipping = mongoose.model('Shipping'),
+  Addressmaster = mongoose.model('Addressmaster'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -23,7 +24,8 @@ var app,
   shop,
   product,
   order,
-  shipping;
+  shipping,
+  address;
 
 /**
  * Listorderbyshop routes tests
@@ -76,6 +78,17 @@ describe('Listorderbyshop CRUD tests', function () {
       days: 20
     });
 
+    address = new Addressmaster({
+      firstname: 'Addressmaster Name',
+      lastname: 'Addressmaster lastname',
+      address: 'Addressmaster address',
+      postcode: 'Addressmaster postcode',
+      subdistrict: 'Addressmaster subdistrict',
+      district: 'Addressmaster district',
+      province: 'Addressmaster province',
+      tel: 'Addressmaster tel'
+    });
+
     product = new Product({
       name: 'Product name',
       detail: 'Product detail',
@@ -115,38 +128,34 @@ describe('Listorderbyshop CRUD tests', function () {
     // Save a user to the test db and create new Payment
     user.save(function () {
       shop.save(function () {
-        shipping.save(function () {
-          product.save(function () {
-            cart.save(function () {
-              order = {
-                shipping: {
-                  address: '499/195',
-                  subdistrict: 'Khongthanon',
-                  district: 'Saimai',
-                  province: 'Bangkok',
-                  postcode: '10220'
-                },
-                items: [{
-                  product: product,
-                  amount: 100,
-                  qty: 1,
-                  delivery: {
-                    description: 'description',
-                    deliverytype: 'deliverytype'
-                  }
-                }],
-                payment: {
-                  paymenttype: 'Credit',
-                  creditno: '2345761890876543',
-                  creditname: 'Sirintra Wannakheaw',
-                  expdate: '02/2018',
-                  creditcvc: '222',
-                  counterservice: ''
-                },
-                cart: cart.id,
-                discount: 100,
-              };
-              done();
+        address.save(function () {
+          shipping.save(function () {
+            product.save(function () {
+              cart.save(function () {
+                order = {
+                  shipping: address,
+                  items: [{
+                    product: product,
+                    amount: 100,
+                    qty: 1,
+                    delivery: {
+                      description: 'description',
+                      deliverytype: 'deliverytype'
+                    }
+                  }],
+                  payment: {
+                    paymenttype: 'Credit',
+                    creditno: '2345761890876543',
+                    creditname: 'Sirintra Wannakheaw',
+                    expdate: '02/2018',
+                    creditcvc: '222',
+                    counterservice: ''
+                  },
+                  cart: cart.id,
+                  discount: 100,
+                };
+                done();
+              });
             });
           });
         });
@@ -248,12 +257,14 @@ describe('Listorderbyshop CRUD tests', function () {
   afterEach(function (done) {
     User.remove().exec(function () {
       Shop.remove().exec(function () {
-        Shipping.remove().exec(function () {
-          Product.remove().exec(function () {
-            Cart.remove().exec(function () {
-              // Order.remove().exec(function() {
-              Order.remove().exec(done);
-              // });
+        Addressmaster.remove().exec(function () {
+          Shipping.remove().exec(function () {
+            Product.remove().exec(function () {
+              Cart.remove().exec(function () {
+                // Order.remove().exec(function() {
+                Order.remove().exec(done);
+                // });
+              });
             });
           });
         });
