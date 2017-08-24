@@ -36,17 +36,16 @@ exports.findUserCart = function (req, res, next) {
       path: 'products',
       populate: {
         path: 'product',
-        model: 'Product',
+        model: 'Product'
+      }
+    })
+    .populate({
+      path: 'products',
+      populate: {
+        path: 'product',
         populate: {
           path: 'shopseller',
-          model: 'Shop',
-          populate: {
-            path: 'shippings',
-            populate: {
-              path: 'shipping',
-              model: 'Shipping'
-            }
-          }
+          model: 'Shop'
         }
       }
     }).exec(function (err, cart) {
@@ -61,6 +60,14 @@ exports.findUserCart = function (req, res, next) {
       next();
     });
 };
+
+// populate: {
+//   path: 'shippings',
+//   populate: {
+//     path: 'shipping',
+//     model: 'Shipping'
+//   }
+// }
 
 exports.processingAddUserCart = function (req, res, next) {
 
