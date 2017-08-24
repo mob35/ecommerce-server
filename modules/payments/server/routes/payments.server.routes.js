@@ -6,10 +6,10 @@
 var paymentsPolicy = require('../policies/payments.server.policy'),
     payments = require('../controllers/payments.server.controller');
 
-module.exports = function(app) {
+module.exports = function (app) {
     // Payments Routes
     app.route('/api/payments')//.all(paymentsPolicy.isAllowed)
-        .post(payments.createPayment, payments.findCart, payments.clearCart);
+        .post(payments.manageAddress, payments.createPayment, payments.findCart, payments.clearCart);
 
     // app.route('/api/payments/:paymentId').all(paymentsPolicy.isAllowed)
     //     .get(payments.read)
