@@ -15,6 +15,9 @@ var app,
     agent,
     credentials,
     user,
+    paymentmaster2,
+    paymentmaster3,
+    paymentmaster4,
     paymentmaster;
 
 /**
