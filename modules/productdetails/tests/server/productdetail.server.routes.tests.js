@@ -168,7 +168,7 @@ describe('get product detail', function () {
           (products.historylog[0].hisdate).should.match(productObj.historylog[0].hisdate);
           (products.view).should.match(0);
           (products.qty).should.match(productObj.qty);
-          (products.shopseller).should.match(shop.id);
+          (products.shopseller.name).should.match('Shop name');
           (products.shippings[0].shipping.name).should.match('shipping name');
           (products.shippings[0].shipping.detail).should.match('shipping detail');
           (products.shippings[0].shipping.days).should.match(10);
