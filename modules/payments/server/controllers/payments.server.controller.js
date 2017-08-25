@@ -20,6 +20,7 @@ exports.manageAddress = function (req, res, next) {
         req.address = address;
         next();
     } else {
+        address.user = req.user;
         address.save(function (err) {
             if (err) {
                 console.log(err);
