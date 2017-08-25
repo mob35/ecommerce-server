@@ -21,6 +21,11 @@ var OrderSchema = new Schema({
         },
         qty: Number,
         amount: Number,
+        status: {
+            type: String,
+            enum: ['waiting', 'accept', 'reject'],
+            default: 'waiting'
+        },
         delivery: {
             description: String,
             deliverytype: String
@@ -39,7 +44,7 @@ var OrderSchema = new Schema({
     totalamount: Number,
     status: {
         type: String,
-        enum: ['confirm', 'complete'],
+        enum: ['confirm', 'paid', 'prepare', 'deliver', 'complete', 'cancel'],
         default: 'confirm'
     },
     cart: String,
